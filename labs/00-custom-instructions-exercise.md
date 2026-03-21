@@ -461,7 +461,7 @@ applyTo: '**/*.module.css'
 }
 ````
 
-### **Exercise 2.5 - Verify All Instructions with** `**/instructions**`
+### **Exercise 2.5 - Verify All Instructions with** `/instructions`
 
 1.  Type `/instructions` in the chat input and press Enter.
 2.  You should now see all instruction files listed:
@@ -522,7 +522,7 @@ Copilot will generate a new `.instructions.md` file capturing the pattern. Revie
 
 Verify with `/instructions` - confirm the newly generated instruction appears in the list alongside your previous instruction files.
 
-### **Exercise 2.8 - Understand** `**/create-instruction**` **vs** `**/init**`
+### **Exercise 2.8 - Understand** `/create-instruction` **vs** `/init`
 
 | Command | Purpose | Creates |
 | --- | --- | --- |
