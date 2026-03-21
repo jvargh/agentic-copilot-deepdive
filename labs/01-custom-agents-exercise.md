@@ -1,7 +1,7 @@
 # Lab: Custom Agents in VS Code - Build Specialized AI Personas
 
 > \[NOTE\]   
-> This lab uses the **Custom Agents** feature in VS Code to create specialized AI personas tailored to specific development tasks. You will build agents for the **Book Favorites** app (`copilot-agent-and-mcp/`).
+> This lab uses the **Custom Agents** feature in VS Code to create specialized AI personas tailored to specific development tasks. You will build agents for the **Book Favorites** app.
 
 ## Overview
 
@@ -11,7 +11,7 @@ Custom agents enable you to configure GitHub Copilot to adopt different personas
 
 **Total Time: ~65 minutes**
 
-| Part | Topic | Description | Time&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |
+| Part | Topic | Description | Time |
 | --- | --- | --- | --- |
 | 1 | [Your First Custom Agent: The Planner](#part-1---your-first-custom-agent-the-planner-10-min) | Create a read-only planning agent using the `.agent.md` format with tool restrictions | 10 min |
 | 2 | [An Implementation Agent with Handoffs](#part-2---an-implementation-agent-with-handoffs-15-min) | Build Implementer and Reviewer agents; connect all three with one-click handoffs | 15 min |
@@ -20,7 +20,7 @@ Custom agents enable you to configure GitHub Copilot to adopt different personas
 | 4A | [Coordinator and Worker Pattern](#part-4a---coordinator-and-worker-pattern-15-min) | Build a Feature Builder coordinator that delegates to specialized worker subagents | 15 min |
 | 4B | [Multi-perspective Code Review](#part-4b---multi-perspective-code-review-10-min) | Run parallel review subagents (correctness, quality, security, architecture) and synthesize findings | 10 min |
 | 5 | [Visibility and Organization](#part-5---visibility-and-organization-5-min) | View, hide, and debug custom agents using the Agents dropdown and diagnostics tools | 5 min |
-| | | **Total Lab Time** | **65 min** |
+|   |   | **Total Lab Time** | **65 min** |
 
 ### Prerequisites
 
@@ -29,7 +29,7 @@ Custom agents enable you to configure GitHub Copilot to adopt different personas
 | **VS Code** | Insiders or latest Stable with GitHub Copilot extension (Agent Mode enabled) |
 | **GitHub Copilot** | Copilot Pro, Pro+, Business, or Enterprise subscription |
 | **Workspace** | This repository cloned locally |
-| **App running** | `npm install && npm start` in `copilot-agent-and-mcp/` - backend on :4000, frontend on :5173 |
+| **App running** | `npm run install:all && npm start` - backend on :4000, frontend on :5173 |
 
 ### Time Estimate
 
@@ -114,11 +114,11 @@ The plan consists of a Markdown document with the following sections:
 3.  Notice the placeholder description in the chat input field.
 4.  Enter this prompt:
 
-> "Analyze the Book Favorites app in copilot-agent-and-mcp/. I want to add a book rating feature where authenticated users can rate books 1-5 stars. Create an implementation plan covering backend API, frontend UI, and tests."
+> "Analyze the Book Favorites app. I want to add a book rating feature where authenticated users can rate books 1-5 stars. Create an implementation plan covering backend API, frontend UI, and tests."
 
 **Verify:**
 
-*   Copilot reads files but does NOT create or edit any files
+*   Copilot reads files but does NOT create or edit any files. It just creates a plan on how to implement the feature.
 *   The plan references specific files like `frontend/src/`
 *   The plan includes numbered steps, risks, and testing guidance
 *   The tools used are limited to read-only operations (check the tool calls in the chat)
@@ -169,6 +169,8 @@ handoffs:
 <earlier content unchanged>
 ```
 
+**Note:** Since the Implementer agent doesn't exist yet, this handoff won't work until you create it in the next step.
+
 ### Exercise 2.2 - Create the Implementation Agent
 
 1.  Click the **gear icon** (⚙) > **Custom Agents** > **Create new custom agent**.
@@ -214,6 +216,8 @@ You are a senior full-stack developer. You implement features based on plans pro
 - Frontend components use React with Redux Toolkit
 - Authentication uses JWT via `authenticateToken` middleware
 ```
+
+**Note:** The Implementer has edit tools, so it can modify files. It also has a handoff to the Reviewer for code review after implementation. Reviewer doesn't exist yet, so that will be the next step.
 
 ### Exercise 2.3 - Create the Code Review Agent
 
@@ -274,7 +278,7 @@ Produce a review report with:
 > "Plan adding a 'reading list' feature where users can mark books as 'want to read', 'currently reading', or 'finished'. Include backend API and frontend UI."
 
 1.  After the plan is generated, look for the **"Start Implementation"** button at the bottom of the response.
-2.  Click the button - you should switch to the **Implementer** agent with the prompt pre-filled.
+2.  Make modifications as needed, then click the button, which should switch to the **Implementer** agent with the prompt pre-filled.
 3.  Let the Implementer work through the plan.
 4.  After implementation, look for the **"Request Code Review"** button.
 5.  Click it to switch to the **Reviewer** agent.
@@ -393,7 +397,7 @@ You are a cautious data migration specialist. You help plan and execute schema c
 *   It validates the result (correct JSON, all books have the field)
 *   After validation passes, it suggests clicking the **"Review Migration"** handoff button
 
-> **Note:** The "Review Migration" button appears after every agent response because handoffs are always visible. The agent should only _suggest_ clicking it after the migration is fully validated.
+**Note:** The "Review Migration" button appears after every agent response because handoffs are always visible. The agent should only _suggest_ clicking it after the migration is fully validated.
 
 ---
 
@@ -412,9 +416,8 @@ Parts 1-3 placed all agents in `.github/agents/`. To keep Part 4 agents separate
 > **Reference:** [Custom agent file locations](https://code.visualstudio.com/docs/copilot/customization/custom-agents#_custom-agent-file-locations)
 
 1.  Open **Settings** (`Ctrl+,`) and search for `chat.agentFilesLocations`.
-2.  Click **Add Item** and enter:
-3.  Save the setting. Your workspace `.vscode/settings.json` should now include:
-4.  Create the folder: right-click `.github/agents/` in the Explorer and select **New Folder**, name it `feature-builder`.
+2.  Click **Add Item** and enter: `.github/agents/feature-builder`
+3.  Create the folder by clicking the **gear icon** (⚙) > **Custom Agents** > **Create new custom agent**, then choose `.github/agents/feature-builder` as the location. This will create the `feature-builder` folder automatically. You can cancel the agent creation and the folder will persist.
 
 > **Why a separate folder?** This keeps the coordinator and worker agents organized together, separate from the handoff agents in Parts 1-3. It also demonstrates how teams can maintain multiple agent folders for different workflows. The `FB` prefix on agent names provides an additional safeguard against naming conflicts.
 
@@ -650,6 +653,8 @@ You are a senior QA engineer who validates implemented features.
 
 **Pattern Overview:** Code review benefits from multiple perspectives. A single pass often misses problems that become obvious through a different lens. This pattern uses subagents to run each review perspective **in parallel**, then synthesizes the findings. Each subagent approaches the code fresh, without being anchored by what other perspectives found.
 
+Unlike Part 4A's Coordinator and Worker pattern - where the coordinator runs workers **sequentially** through dependent phases (plan → architect → implement → QA) - this pattern spawns all review subagents **in parallel** because each perspective is independent and does not need results from the others before starting.
+
 > **Reference:** [Multi-perspective code review](https://code.visualstudio.com/docs/copilot/agents/subagents#_multiperspective-code-review)
 
 ```
@@ -824,11 +829,19 @@ At this point you have agents organized into three patterns:
   └───────────────────────────────────────────────────────────────┘
 ```
 
-### Exercise 5.4 - Use Chat Customization Diagnostics
+### Exercise 5.4 - Compare Orchestration Patterns
 
-1.  Right-click in the Chat view and select **Diagnostics**.
-2.  Review the loaded custom agents, their source files, and any configuration errors.
-3.  Check that all agents are listed with their correct tool configurations and `user-invocable` settings.
+Review the two orchestration patterns you built in Part 4 and understand when to use each:
+
+| Aspect | Coordinator and Worker (Part 4A) | Multi-perspective Review (Part 4B) |
+| --- | --- | --- |
+| **Execution** | Sequential - each worker depends on the previous worker's output | Parallel - all subagents run independently at the same time |
+| **Worker visibility** | Named agents with `user-invocable: false`, defined as `.agent.md` files | Anonymous subagents defined inline in the coordinator's prompt |
+| **Data flow** | Output from one phase feeds into the next (plan → architecture → implementation → QA) | Each subagent receives the same input; results are synthesized at the end |
+| **Iteration** | Coordinator can loop workers (e.g., send implementer back if QA fails) | No iteration between subagents - coordinator merges findings in one pass |
+| **Best for** | Multi-phase workflows with dependencies (feature development, migrations) | Independent analysis from different angles (code review, audits, assessments) |
+| **Agent files** | One coordinator + multiple worker `.agent.md` files | One coordinator `.agent.md` file (subagents are inline) |
+| **Example** | Feature Builder → FB Planner → FB Architect → FB Implementer → FB QA | FB Reviewer → (correctness + quality + security + architecture) → synthesized report |
 
 ### Exercise 5.5 - Understand How Agents Feed into Hooks
 
@@ -936,7 +949,7 @@ Generate a valid OpenAPI 3.0 YAML spec covering all endpoints, including:
 1.  Select the **API Designer** agent from the dropdown.
 2.  Enter this prompt:
 
-> "Analyze all the REST API endpoints in copilot-agent-and-mcp/backend/routes/index.js. Evaluate them against REST best practices and produce an improvement report and a complete OpenAPI 3.0 spec."
+> "Analyze all the REST API endpoints in backend/routes/index.js. Evaluate them against REST best practices and produce an improvement report and a complete OpenAPI 3.0 spec."
 
 **Verify:**
 
