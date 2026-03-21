@@ -1,7 +1,7 @@
 # Lab: Custom Instructions in VS Code - Define Coding Standards for AI
 
 > \[!NOTE\]  
-> This lab uses the **Custom Instructions** feature in VS Code to define coding standards, conventions, and guidelines that GitHub Copilot follows automatically. You will configure instructions for the **Book Favorites** app (`copilot-agent-and-mcp/`).
+> This lab uses the **Custom Instructions** feature in VS Code to define coding standards, conventions, and guidelines that GitHub Copilot follows automatically. You will configure instructions for the **Book Favorites** app.
 > 
 > **This lab is a prerequisite for the** [**Custom Agents lab**](01-custom-agents-exercise.md)**.** Custom instructions define _what rules to follow_; custom agents define _who follows them_ and _with which tools_. Understanding instructions first makes agent design much clearer.
 
@@ -25,13 +25,13 @@ Instead of typing "always use single quotes and semicolons" in every chat, you w
 
 **Total Time: ~45 minutes**
 
-| Part | Topic | Description | Time&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |
+| Part | Topic | Description | Time |
 | --- | --- | --- | --- |
 | Pre | [Prerequisites](#prerequisites) | VS Code, Copilot subscription, repo cloned, Context7 MCP configured, app running | 10 min |
 | 1 | [Always-On Instructions with `copilot-instructions.md`](#part-1---always-on-instructions-with-copilot-instructionsmd-10-min) | Understand always-on vs file-based instructions; enhance `copilot-instructions.md` with project conventions | 10 min |
 | 2 | [File-Based Instructions with `/create-instruction`](#part-2---file-based-instructions-with-create-instruction-20-min) | Generate targeted `.instructions.md` files with `applyTo` glob patterns; extract instructions from conversations | 20 min |
 | 3 | [Organize and Verify Instructions](#part-3---organize-and-verify-instructions-5-min) | Use `/instructions` to verify loaded files; troubleshoot with Diagnostics; understand instruction priority | 5 min |
-| | | **Total** | **45&nbsp;min** |
+|   |   | **Total** | **45 min** |
 
 ### Prerequisites (10 min)
 
@@ -41,29 +41,36 @@ Instead of typing "always use single quotes and semicolons" in every chat, you w
 | **GitHub Copilot** | Copilot Pro, Pro+, Business, or Enterprise subscription |
 | **Workspace** | This repository cloned locally |
 | **Context7 MCP** | Context7 MCP server configured in VS Code (see setup below) |
-| **App running** | `npm install && npm start` in `copilot-agent-and-mcp/` - backend on :4000, frontend on :5173 |
+| **App running** | Install dependencies and start the app (see steps below) |
 
-### Context7 MCP Setup
+#### Install and Start the App
+
+**Install dependencies** (from the project root):
+
+**Start the app** (backend + frontend):
+
+The backend runs on [http://localhost:4000](http://localhost:4000) and the frontend on [http://localhost:5173](http://localhost:5173).
+
+#### Context7 MCP Setup
 
 This lab uses the **Context7 MCP server** to pull up-to-date library documentation directly into your prompts. This ensures the instruction files you generate reflect current best practices - not outdated patterns.
 
-1.  Open **Settings** (`Ctrl+,`) and search for `mcp`.
-2.  Open your MCP configuration (user or workspace `settings.json`) and add the Context7 server if not already present:
+1.  Open (or create) the file `.vscode/mcp.json` in your workspace root and add the Context7 server if not already present:
 
 ```
-"mcp": {
-    "servers": {
-        "context7": {
-            "type": "stdio",
-            "command": "npx",
-            "args": ["-y", "@upstash/context7-mcp@latest"]
-        }
+{
+  "servers": {
+    "context7": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp@latest"]
     }
+  }
 }
 ```
 
-1.  Restart VS Code to activate the MCP server.
-2.  Verify it is running: in the Chat view, type `@` and check that Context7 tools (`context7_resolve-library-id`, `context7_get-library-docs`) appear in the tool list.
+1.  Open `.vscode/mcp.json` in the editor, click the **Start** button that appears above the `context7` server entry to start the MCP server.
+2.  Verify it is running: in the Chat view, click the **Tools** button (wrench icon) and confirm that `context7` tools (`resolve-library-id`, `query-docs`) appear in the tools list.
 
 > **Why Context7?** When you ask `/create-instruction` to generate conventions for React or Express, the AI relies on its training data which may be outdated. By referencing Context7 in your prompt, Copilot first fetches the **latest official documentation** for each library, then generates instructions that align with current APIs and best practices.
 
@@ -101,11 +108,11 @@ When multiple instruction sources exist, they are all provided to the AI. Higher
 
 **Objective:** Understand the existing `copilot-instructions.md` file, enhance it with project-specific conventions, and verify that Copilot applies it to every chat request.
 
-### Exercise 1.1 - Examine the Existing Instructions
+### **Exercise 1.1 - Examine the Existing Instructions**
 
 The Book Favorites app already has a `copilot-instructions.md` file. Open it and review its contents:
 
-1.  Open `copilot-agent-and-mcp/.github/copilot-instructions.md` in the editor.
+1.  Open `.github/copilot-instructions.md` in the editor.
 2.  Read through the instructions. You should see rules about comment prefixes, test commands, and change verification.
 
 **Current content:**
@@ -129,12 +136,11 @@ Important Instructions:
    - Suggest any additional improvements
 ```
 
-### Exercise 1.2 - Enhance with Project Conventions
+### **Exercise 1.2 - Enhance with Project Conventions**
 
 Add the following project-specific conventions to the bottom of `copilot-instructions.md`:
 
 ```
-
 ## Project Architecture
 
 - **Backend**: Express.js REST API in `backend/`
@@ -155,7 +161,7 @@ Add the following project-specific conventions to the bottom of `copilot-instruc
 - Use plural nouns for REST resource endpoints (e.g., `/api/books`, `/api/reading-lists`)
 ```
 
-### Exercise 1.3 - Verify Instructions Are Applied
+### **Exercise 1.3 - Verify Instructions Are Applied**
 
 1.  Open the Chat view in VS Code.
 2.  Type `/instructions` in the chat input box and press Enter.
@@ -168,18 +174,18 @@ Add the following project-specific conventions to the bottom of `copilot-instruc
 
 1.  Now test that Copilot follows the instructions. Open a **new chat** and enter:
 
-> "Add a comment to the top of `copilot-agent-and-mcp/backend/routes/books.js` describing what this file does."
+> "Add a comment to the top of `backend/routes/books.js` describing what this file does."
 
 **Verify:**
 
 *   The generated comment starts with `generated-by-copilot:` (following rule #1)
 *   Copilot references the existing code conventions (modular routes, Express.js)
 
-### Exercise 1.4 - Check the References Section
+### **Exercise 1.4 - Check the References Section**
 
 After Copilot responds, look at the **References** section at the bottom of the chat response (click to expand if collapsed). You should see `copilot-instructions.md` listed as a context source.
 
-> **Tip:** If you don't see it in References, right-click in the Chat view and select **Diagnostics** to check if the file was loaded.
+> **Tip:** If you don't see it in References, click the **Chat** view > **Gear icon** > **Show Agent Debug logs** and look for loaded instructions.
 
 ---
 
@@ -207,7 +213,7 @@ File-based instructions use `.instructions.md` files stored in `.github/instruct
     is applied automatically            is applied automatically
 ```
 
-### Exercise 2.1 - Generate React Instructions
+### **Exercise 2.1 - Generate React Instructions**
 
 1.  Type `/create-instruction` in the Chat view.
 2.  When prompted for a location, choose `.github/instructions` and enter `react` as the file name.
@@ -234,7 +240,7 @@ File-based instructions use `.instructions.md` files stored in `.github/instruct
 
 Fix any issues from the checklist. Common problems to watch for:
 
-*   `**applyTo**` **is an array** - e.g. `applyTo: ['frontend/**/*.jsx', '**/*.tsx']`. Replace with the plain string `applyTo: '**/*.jsx'`.
+*   `applyTo` **is an array** - e.g. `applyTo: ['frontend/**/*.jsx', '**/*.tsx']`. Replace with the plain string `applyTo: '**/*.jsx'`.
 *   **Includes TSX** - this project uses `.jsx` only. Remove any `.tsx` patterns.
 *   **Too long** - if the body exceeds ~50 lines, delete sections you didn't ask for (performance optimization, custom hooks, testing considerations, summary checklists).
 *   **Contradicts other instructions** - e.g. says "use camelCase for CSS class names" when the CSS instructions say kebab-case. Remove CSS naming rules from this file (they belong in the CSS instruction).
@@ -285,7 +291,7 @@ import { useSelector } from 'react-redux';
 const token = useSelector(state => state.user.token);
 ````
 
-### Exercise 2.2 - Generate Express Backend Instructions
+### **Exercise 2.2 - Generate Express Backend Instructions**
 
 1.  Type `/create-instruction` in a new Chat view.
 2.  When prompted for a location, choose `.github/instructions` and enter `express` as the file name.
@@ -347,7 +353,7 @@ applyTo: '**/*.js'
 - Write with `fs.writeFileSync()` with `JSON.stringify(data, null, 2)` for readability
 ```
 
-### Exercise 2.3 - Generate Testing Instructions
+### **Exercise 2.3 - Generate Testing Instructions**
 
 1.  Type `/create-instruction` in the Chat view.
 2.  When prompted for a location, choose `.github/instructions` and enter `testing` as the file name.
@@ -391,7 +397,7 @@ applyTo: '**/*.{test,spec,cy}.{js,jsx}'
 - Always start test descriptions with "should"
 ```
 
-### Exercise 2.4 - Generate CSS Module Instructions
+### **Exercise 2.4 - Generate CSS Module Instructions**
 
 1.  Type `/create-instruction` in the Chat view.
 2.  When prompted for a location, choose `.github/instructions` and enter `css` as the file name.
@@ -455,7 +461,7 @@ applyTo: '**/*.module.css'
 }
 ````
 
-### Exercise 2.5 - Verify All Instructions with `/instructions`
+### **Exercise 2.5 - Verify All Instructions with** `**/instructions**`
 
 1.  Type `/instructions` in the chat input and press Enter.
 2.  You should now see all instruction files listed:
@@ -470,33 +476,33 @@ applyTo: '**/*.module.css'
 
 1.  Verify each file appears with its name from the `name` frontmatter field.
 
-### Exercise 2.6 - Test Pattern-Based Activation
+### **Exercise 2.6 - Test Pattern-Based Activation**
 
 Test that the right instructions activate based on the file you are working on:
 
 **Test 1 - React instructions:**
 
-1.  Open `copilot-agent-and-mcp/frontend/src/components/BookList.jsx` in the editor.
+1.  Open `frontend/src/components/BookList.jsx` in the editor.
 2.  In the Chat view, ask:
 
 > "Refactor the BookList component to extract the reading list dropdown into a separate component called ReadingListDropdown."
 
-1.  Check the **References** section - you should see `react.instructions.md` listed. If not ask copilot if it did pick it up.
+1.  Check the **References** section - you should see `react.instructions.md` listed. If not ask copilot if it did pick it up by running prompt `what were the references used in the BookList.jsx implementation?`
 2.  Verify the generated code uses `useAppSelector`/`useAppDispatch` (not raw Redux hooks), CSS Modules, and functional component patterns.
 
 **Test 2 - Express instructions:**
 
-1.  Open `copilot-agent-and-mcp/backend/routes/books.js` in the editor.
+1.  Open `backend/routes/books.js` in the editor.
 2.  Ask:
 
 > "Add a GET endpoint to search books by title with a query parameter."
 
-1.  Check **References** - you should see `express.instructions.md` listed. If not ask copilot if it did pick it up.
+1.  Check **References** - you should see `express.instructions.md` listed. If not ask copilot if it did pick it up by running prompt `what were the references used in the books.js implementation?`
 2.  Verify the generated code follows the factory function pattern, uses `req.query`, and returns proper status codes.
 
 > **Tip:** If an instruction file does not appear in References, check that the `applyTo` glob pattern matches the file path relative to the workspace root. Use `/instructions` to confirm the file is registered.
 
-### Exercise 2.7 - Extract an Instruction from a Conversation
+### **Exercise 2.7 - Extract an Instruction from a Conversation**
 
 You can also extract instructions from an ongoing chat. This is useful when you correct Copilot mid-conversation and want to capture the correction permanently.
 
@@ -504,7 +510,7 @@ You can also extract instructions from an ongoing chat. This is useful when you 
 
 > "Create a new Express route for book reviews in `backend/routes/reviews.js`."
 
-1.  If Copilot generates code that uses `module.exports = function(app) { ... }` (older Express pattern) instead of the project's factory function pattern, correct it:
+1.  If Copilot generates code that uses `module.exports = function(app) { ... }` (older Express pattern) instead of the project's factory function pattern, correct it. The older pattern directly mounts routes on the `app` instance passed in, while the factory function pattern returns a configured `Router` object and receives dependencies (like data or middleware) through a `deps` parameter, making routes more testable and modular. Use the following prompt to correct it:
 
 > "No - this project uses a factory function pattern: `module.exports = function createReviewsRouter(deps) { ... }` that receives a `deps` object. Fix the code."
 
@@ -516,16 +522,32 @@ Copilot will generate a new `.instructions.md` file capturing the pattern. Revie
 
 Verify with `/instructions` - confirm the newly generated instruction appears in the list alongside your previous instruction files.
 
-### Exercise 2.8 - Understand `/create-instruction` vs `/init`
+### **Exercise 2.8 - Understand** `**/create-instruction**` **vs** `**/init**`
 
 | Command | Purpose | Creates |
 | --- | --- | --- |
 | `/create-instruction` | Generate a targeted, file-specific instruction | A single `.instructions.md` file with a focused `applyTo` pattern |
 | `/init` | Bootstrap comprehensive workspace-wide instructions | A `copilot-instructions.md` file covering the entire project |
 
-Try `/init` if you want to see what Copilot would generate for the entire workspace (it analyzes project structure, dependencies, and patterns). It will either create or update `copilot-instructions.md`.
+Since this project already has a `copilot-instructions.md` file (which you enhanced in Exercise 1.2), running `/init` will offer to **update** the existing file rather than create a new one. This is a good opportunity to see how Copilot analyzes your project and what conventions it discovers on its own.
 
-> **Note:** If you already have a `copilot-instructions.md` file, `/init` will offer to update it. Review carefully before accepting - it may overwrite your Exercise 1.2 additions.
+1.  Open a new chat and type:
+
+> `/init`
+
+Copilot will scan the workspace - project structure, dependencies, file patterns - and propose an updated `copilot-instructions.md`. **Do not accept it immediately.** Instead, compare the proposed content with your current file:
+
+*   What did Copilot discover that you hadn't documented?
+*   Did it miss any conventions you added manually in Exercise 1.2?
+*   Would accepting the update overwrite important rules you wrote?
+
+You have three options:
+
+*   **Accept** the generated file if it improves on yours
+*   **Decline** and keep your hand-crafted version
+*   **Cherry-pick** useful additions from the proposal into your existing file manually
+
+> **Recommendation:** Decline the full replacement and instead copy any useful discoveries into your existing `copilot-instructions.md` by hand. This preserves your Exercise 1.2 work while incorporating anything Copilot found that you missed.
 
 ---
 
@@ -533,13 +555,12 @@ Try `/init` if you want to see what Copilot would generate for the entire worksp
 
 **Objective:** Review your complete instruction file structure, verify everything is loaded correctly, use Diagnostics for troubleshooting, and understand how instructions flow into the agents you will build in the next lab.
 
-### Exercise 3.1 - Review Your Instruction File Structure
+### **Exercise 3.1 - Review Your Instruction File Structure**
 
 At this point you should have the following files:
 
 ```
-copilot-agent-and-mcp/
-  .github/
+.github/
     copilot-instructions.md              ← Always-on (Part 1)
     instructions/
       react.instructions.md             ← applyTo: **/*.jsx (Part 2)
@@ -548,7 +569,7 @@ copilot-agent-and-mcp/
       css.instructions.md               ← applyTo: **/*.module.css (Part 2)
 ```
 
-### Exercise 3.2 - Troubleshoot with Diagnostics
+### **Exercise 3.2 - Troubleshoot with Diagnostics**
 
 If any instruction file is missing from the `/instructions` list:
 
@@ -570,12 +591,13 @@ If any instruction file is missing from the `/instructions` list:
 | YAML error | File not listed or shows error | Fix frontmatter: ensure `---` delimiters, proper quoting |
 | Setting disabled | Entire category missing | Check `chat.instructionsFilesLocations` in Settings |
 
-### Exercise 3.3 - Configure Custom Instruction Locations (Optional)
+### **Exercise 3.3 - Configure Custom Instruction Locations**
 
-By default, VS Code searches `.github/instructions/` for instruction files. You can add or remove search locations:
+By default, VS Code searches several well-known directories for instruction files. You can add your own locations or disable ones you don't use.
 
-1.  Open **Settings** (`Ctrl+,`) and search for `chat.instructionsFilesLocations`.
-2.  You should see the default locations:
+Open **Settings** (`Ctrl+,`) and search for `chat.instructionsFilesLocations`.
+
+You should see the default locations:
 
 ```
 "chat.instructionsFilesLocations": {
@@ -586,9 +608,42 @@ By default, VS Code searches `.github/instructions/` for instruction files. You 
 }
 ```
 
-1.  You can add custom paths (e.g., `"docs/conventions": true`) or disable user-level instructions by setting them to `false`.
+1.  Add a custom project-specific path. Click **Add Item**, set the key to `.github/instructions/docs/conventions` and value to `true`:
 
-### Exercise 3.4 - Understand How Instructions Feed into Agents
+```
+"chat.instructionsFilesLocations": {
+    ".github/instructions": true,
+    ".claude/rules": true,
+    "~/.copilot/instructions": true,
+    "~/.claude/rules": true,
+    ".github/instructions/docs/conventions": true
+}
+```
+
+1.  Create a test instruction file to verify it works. In the Chat view, click the **gear icon** (⚙️) at the top, then select **Add Instructions...**. Choose the `.github/instructions/docs/conventions` folder as the location and name the file `naming`. Add the following content:
+
+```
+---
+applyTo: "**/*.js"
+description: "Enforces descriptive naming conventions for all JavaScript files"
+---
+generated-by-copilot: Naming convention instruction
+- Use descriptive variable names; avoid single-letter names except in loop counters.
+```
+
+Open the Chat view and type `/instructions`. Confirm that `.github/instructions/docs/conventions/naming.instructions.md` now appears in the loaded instructions list alongside the ones from `.github/instructions/`.
+
+To validate that the instruction is actually being picked up, open a new chat and ask:
+
+> "Create a simple JavaScript utility function in `backend/utils/helpers.js` that calculates the average of an array of numbers."
+
+Check the generated code - variable names should be descriptive (e.g., `numbers`, `total`, `average`) rather than short or single-letter (e.g., `n`, `t`, `a`), confirming the naming convention instruction is active. Prompt `what were the references used in the helpers.js implementation?` to see if the new instruction is listed.
+
+**Clean up:** If you prefer, delete the `.github/instructions/docs/` folder you just created - this was only to verify custom locations work. You can also remove the `".github/instructions/docs/conventions": true` entry from settings.
+
+> **Tip:** The `~/.copilot/instructions` path (user home directory) is useful for personal instructions that apply across all your projects - for example, your preferred coding style or editor shortcuts. Workspace-level paths like `.github/instructions` are better for team-shared conventions.
+
+### **Exercise 3.4 - Understand How Instructions Feed into Agents**
 
 The instructions you created in this lab are automatically available to the custom agents you will build in the [Custom Agents lab](01-custom-agents-exercise.md). Here is how they connect:
 
