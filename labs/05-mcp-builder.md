@@ -12,13 +12,13 @@ Build a fully functional MCP server from scratch using GitHub Copilot in Agent M
 
 > **Note:** If `book-database-mcp-server/` already exists in your workspace, delete it first. This lab rebuilds it from scratch.
 
-| Exercise | Skill | What You Learn |
-| --- | --- | --- |
-| 1 | **Skill installation** | Install and verify an Agent Skill in VS Code - understand how skills extend Copilot's capabilities |
-| 2 | **AI-scaffolded project** | Prompt Copilot with the MCP Builder skill to scaffold a TypeScript project with proper structure, config, and dependencies |
-| 3 | **Tool implementation** | Prompt Copilot to implement MCP tools with Zod validation, annotations, and error handling - learn MCP tool design patterns |
-| 4 | **MCP testing** | Test the server with MCP Inspector - verify tools work before wiring to an AI client |
-| 5 | **VS Code integration** | Wire the server into VS Code and test it from Copilot Chat - the full loop from build to use |
+| Exercise | Skill                     | What You Learn                                                                                                              |
+| -------- | ------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| 1        | **Skill installation**    | Install and verify an Agent Skill in VS Code - understand how skills extend Copilot's capabilities                          |
+| 2        | **AI-scaffolded project** | Prompt Copilot with the MCP Builder skill to scaffold a TypeScript project with proper structure, config, and dependencies  |
+| 3        | **Tool implementation**   | Prompt Copilot to implement MCP tools with Zod validation, annotations, and error handling - learn MCP tool design patterns |
+| 4        | **MCP testing**           | Test the server with MCP Inspector - verify tools work before wiring to an AI client                                        |
+| 5        | **VS Code integration**   | Wire the server into VS Code and test it from Copilot Chat - the full loop from build to use                                |
 
 ---
 
@@ -79,10 +79,10 @@ Do you have the MCP Builder skill loaded? Summarize the four phases of building 
 
 ### Validation
 
-*   `.github/skills/mcp-builder/SKILL.md` exists
-*   4 reference files in `.github/skills/mcp-builder/reference/`
-*   Skill appears in Chat Customizations
-*   Copilot confirms the 4-phase workflow
+- `.github/skills/mcp-builder/SKILL.md` exists
+- 4 reference files in `.github/skills/mcp-builder/reference/`
+- Skill appears in Chat Customizations
+- Copilot confirms the 4-phase workflow
 
 ---
 
@@ -94,9 +94,9 @@ Do you have the MCP Builder skill loaded? Summarize the four phases of building 
 
 The data files are in `copilot-mcp/src/data/`. Open both:
 
-| File | Contents |
-| --- | --- |
-| `books.json` | ISBN, title, author |
+| File                 | Contents                    |
+| -------------------- | --------------------------- |
+| `books.json`         | ISBN, title, author         |
 | `books-details.json` | ISBN, summary, date, author |
 
 ### Step 2: Prompt Copilot to Scaffold
@@ -130,11 +130,11 @@ book-database-mcp-server/
 
 Open `package.json` and `tsconfig.json`. Confirm:
 
-*   `"type": "module"` in package.json
-*   `@modelcontextprotocol/sdk` and `zod` in dependencies
-*   `"strict": true` in tsconfig.json
-*   `outDir` → `./dist`, `rootDir` → `./src`
-*   `"build": "tsc"` script defined
+- `"type": "module"` in package.json
+- `@modelcontextprotocol/sdk` and `zod` in dependencies
+- `"strict": true` in tsconfig.json
+- `outDir` → `./dist`, `rootDir` → `./src`
+- `"build": "tsc"` script defined
 
 ### Step 5: Install and Build
 
@@ -146,11 +146,34 @@ npm run build
 
 Fix any compilation errors before moving on.
 
+### Step 6: Copy Data Files to dist
+
+After building, TypeScript compiles only `.ts` files to the `dist/` directory. The data files need to be manually copied:
+
+**On Linux/macOS:**
+
+```bash
+cp -r src/data dist/
+```
+
+**On Windows (PowerShell):**
+
+```powershell
+Copy-Item -Path src/data -Destination dist/data -Recurse -Force
+```
+
+Verify the files are in place:
+
+```
+dist/data/books.json
+dist/data/books-details.json
+```
+
 ### Validation
 
-*   Project scaffolded with correct structure
-*   Config files match MCP Builder recommendations
-*   `npm run build` succeeds with zero errors
+- Project scaffolded with correct structure
+- Config files match MCP Builder recommendations
+- `npm run build` succeeds with zero errors
 
 ---
 
@@ -168,15 +191,15 @@ Using the MCP Builder skill best practices, implement four tools in the book-dat
 
 Check these quality criteria:
 
-| Criteria | Expected |
-| --- | --- |
-| API | Uses `server.registerTool()` (NOT deprecated `server.tool()`) |
-| Annotations | `readOnlyHint: true`, `destructiveHint: false`, `idempotentHint: true` |
-| Zod schemas | Uses `.strict()` to reject extra fields |
-| Descriptions | Zod fields have `.describe()` for discoverability |
-| ISBN validation | Enforces exactly 10 characters |
-| Error messages | Clear and actionable for not-found cases |
-| Types | No `any` - uses proper types or `unknown` |
+| Criteria        | Expected                                                               |
+| --------------- | ---------------------------------------------------------------------- |
+| API             | Uses `server.registerTool()` (NOT deprecated `server.tool()`)          |
+| Annotations     | `readOnlyHint: true`, `destructiveHint: false`, `idempotentHint: true` |
+| Zod schemas     | Uses `.strict()` to reject extra fields                                |
+| Descriptions    | Zod fields have `.describe()` for discoverability                      |
+| ISBN validation | Enforces exactly 10 characters                                         |
+| Error messages  | Clear and actionable for not-found cases                               |
+| Types           | No `any` - uses proper types or `unknown`                              |
 
 ### Step 3: Build and Fix
 
@@ -189,7 +212,7 @@ Iterate with Copilot until the build succeeds with zero errors.
 ### Step 4: Run the Server
 
 ```
-node dist/index.js
+node .\dist\index.js
 ```
 
 **Expected on stderr:**
@@ -202,10 +225,10 @@ Press `Ctrl+C` to stop (server hangs waiting for stdin - that's expected).
 
 ### Step 5: Validate the Transport Handshake
 
-Send a raw MCP `initialize` request:
+In another terminal, send a raw MCP `initialize` request:
 
 ```
-cd .\book-database-mcp-server\   
+cd .\book-database-mcp-server\
 
 echo '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"test","version":"0.1.0"}}}' | node dist/index.js
 ```
@@ -214,11 +237,11 @@ Verify the response includes `"name": "book-database-mcp-server"` and a `capabil
 
 ### Validation
 
-*   4 tools implemented with `server.registerTool()`
-*   Zod schemas use `.strict()` and `.describe()`
-*   Annotations present on all tools
-*   `npm run build` succeeds
-*   Server starts and responds to initialize request
+- 4 tools implemented with `server.registerTool()`
+- Zod schemas use `.strict()` and `.describe()`
+- Annotations present on all tools
+- `npm run build` succeeds
+- Server starts and responds to initialize request
 
 ---
 
@@ -236,21 +259,24 @@ This opens a browser UI showing all registered tools.
 
 ### Step 2: Run Test Cases
 
-| # | Tool | Input | Expected |
-| --- | --- | --- | --- |
-| 1 | `get_book_by_isbn` | `{ "isbn": "0451524935" }` | Details for "1984" by George Orwell |
-| 2 | `get_book_by_title` | `{ "title": "The Hobbit" }` | ISBN `0547928227`, author J.R.R. Tolkien |
-| 3 | `get_books_by_titles` | `{ "titles": ["1984", "Brave New World"] }` | Two book entries |
-| 4 | `get_books_by_isbn_list` | `{ "isbn_list": ["0451524935", "0547928227"] }` | Details for 1984 and The Hobbit |
-| 5 | `get_book_by_isbn` | `{ "isbn": "0000000000" }` | Not-found error message |
-| 6 | `get_book_by_isbn` | `{ "isbn": "short" }` | Zod validation error (not 10 chars) |
+Select each tool in the Inspector sidebar, fill in the parameter fields, and click **Run**.
+
+| #   | Tool           | Parameter(s)                                          | Expected                                     |
+| --- | -------------- | ----------------------------------------------------- | -------------------------------------------- |
+| 1   | `search_books` | **query**: `1984`                                     | Details for "1984" by George Orwell          |
+| 2   | `search_books` | **query**: `The Hobbit`                               | ISBN `0547928227`, author J.R.R. Tolkien     |
+| 3   | `search_books` | **query**: `Orwell`                                   | All books by George Orwell                   |
+| 4   | `search_books` | **query**: `1984`, **limit**: `1`                     | Single result for "1984"                     |
+| 5   | `search_books` | **query**: `fiction`, **limit**: `5`, **offset**: `5` | Paginated results (second page of 5)         |
+| 6   | `search_books` | **query**: `1984`, **response_format**: `json`        | JSON structured response instead of markdown |
+| 7   | `search_books` | **query**: `nonexistentbook99`                        | Empty results or not-found message           |
 
 ### Validation
 
-*   All 4 tools visible in Inspector
-*   Valid inputs return correct data
-*   Invalid ISBN returns validation error
-*   Not-found ISBN returns actionable error message
+- All 4 tools visible in Inspector
+- Valid inputs return correct data
+- Invalid ISBN returns validation error
+- Not-found ISBN returns actionable error message
 
 ---
 
@@ -298,18 +324,18 @@ Now get the summaries for The Hobbit and Pride and Prejudice.
 
 ### Validation
 
-*   `.vscode/mcp.json` configured
-*   MCP server starts from VS Code
-*   Copilot calls MCP tools and returns book data
+- `.vscode/mcp.json` configured
+- MCP server starts from VS Code
+- Copilot calls MCP tools and returns book data
 
 ---
 
 ## Troubleshooting
 
-| Issue | Fix |
-| --- | --- |
-| `npm run build` fails with import errors | Ensure `"type": "module"` in package.json and `"module": "Node16"` in tsconfig.json |
-| MCP Inspector won't connect | Run `npm run build` first - `dist/index.js` must exist |
-| Tools not appearing in Copilot | Restart VS Code after updating `.vscode/mcp.json` |
-| `Cannot find module './data/books.json'` | Ensure JSON files are in `src/data/` and use `resolveJsonModule` in tsconfig |
-| Copilot uses `server.tool()` | Re-prompt: "Use `server.registerTool()` - the modern API, not deprecated `server.tool()`" |
+| Issue                                    | Fix                                                                                       |
+| ---------------------------------------- | ----------------------------------------------------------------------------------------- |
+| `npm run build` fails with import errors | Ensure `"type": "module"` in package.json and `"module": "Node16"` in tsconfig.json       |
+| MCP Inspector won't connect              | Run `npm run build` first - `dist/index.js` must exist                                    |
+| Tools not appearing in Copilot           | Restart VS Code after updating `.vscode/mcp.json`                                         |
+| `Cannot find module './data/books.json'` | Ensure JSON files are in `src/data/` and use `resolveJsonModule` in tsconfig              |
+| Copilot uses `server.tool()`             | Re-prompt: "Use `server.registerTool()` - the modern API, not deprecated `server.tool()`" |
