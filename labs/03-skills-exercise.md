@@ -2,7 +2,7 @@
 
 > \[!NOTE\]  
 > This lab uses the **Agent Skills** feature in VS Code to create portable, reusable capabilities that GitHub Copilot loads on demand. You will build skills for the **Book Favorites** app (`copilot-agent-and-mcp/`).
-> 
+>
 > **Prerequisite:** Complete the [Custom Agents lab](custom-agents-exercise.md) first. Part 2 of this lab adds a skill that works alongside the agents you created there.
 
 ## Overview
@@ -11,34 +11,34 @@ Agent Skills are folders of instructions, scripts, and resources that Copilot ca
 
 ### Agent Skills vs Custom Instructions vs Custom Agents
 
-|   | Agent Skills | Custom Instructions | Custom Agents |
-| --- | --- | --- | --- |
-| **Purpose** | Teach specialized capabilities and workflows | Define coding standards and guidelines | Configure AI personas with tool restrictions |
-| **Portability** | VS Code, Copilot CLI, Copilot coding agent | VS Code and GitHub.com only | VS Code only |
-| **Content** | Instructions, scripts, examples, and resources | Instructions only | Instructions + tool/model config |
-| **Scope** | Task-specific, loaded on-demand | Always applied (or via glob patterns) | Switched manually or via handoffs |
-| **Standard** | Open standard (agentskills.io) | VS Code-specific | VS Code-specific |
+|                 | Agent Skills                                   | Custom Instructions                    | Custom Agents                                |
+| --------------- | ---------------------------------------------- | -------------------------------------- | -------------------------------------------- |
+| **Purpose**     | Teach specialized capabilities and workflows   | Define coding standards and guidelines | Configure AI personas with tool restrictions |
+| **Portability** | VS Code, Copilot CLI, Copilot coding agent     | VS Code and GitHub.com only            | VS Code only                                 |
+| **Content**     | Instructions, scripts, examples, and resources | Instructions only                      | Instructions + tool/model config             |
+| **Scope**       | Task-specific, loaded on-demand                | Always applied (or via glob patterns)  | Switched manually or via handoffs            |
+| **Standard**    | Open standard (agentskills.io)                 | VS Code-specific                       | VS Code-specific                             |
 
 ### What You Will Learn
 
 **Total Time: ~30 minutes**
 
-| Part | Topic | Description | Time&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |
-| --- | --- | --- | --- |
-| Pre | [Prerequisites](#prerequisites) | VS Code, Copilot subscription, repo cloned, app running, Custom Agents lab completed | - |
-| 1 | [Your First Skill: Data Seeder](#part-1---your-first-skill-data-seeder-15-min) | Create a skill with a utility script that generates realistic seed data for `backend/data/` JSON files | 15 min |
-| 2 | [Generate a Skill with `/create-skill`](#part-2--generate-a-skill-with-create-skill-test-fixture-generator-15-min) | Use `/create-skill` to generate a test fixture skill that chains from Part 1's seeded data | 15 min |
-| | | **Total** | **30&nbsp;min** |
+| Part | Topic                                                                                                              | Description                                                                                            | Time&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |
+| ---- | ------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------ | ---------------------------------------------------- |
+| Pre  | [Prerequisites](#prerequisites)                                                                                    | VS Code, Copilot subscription, repo cloned, app running, Custom Agents lab completed                   | -                                                    |
+| 1    | [Your First Skill: Data Seeder](#part-1---your-first-skill-data-seeder-15-min)                                     | Create a skill with a utility script that generates realistic seed data for `backend/data/` JSON files | 15 min                                               |
+| 2    | [Generate a Skill with `/create-skill`](#part-2--generate-a-skill-with-create-skill-test-fixture-generator-15-min) | Use `/create-skill` to generate a test fixture skill that chains from Part 1's seeded data             | 15 min                                               |
+|      |                                                                                                                    | **Total**                                                                                              | **30&nbsp;min**                                      |
 
 ### Prerequisites
 
-| Requirement | Details |
-| --- | --- |
-| **VS Code** | Insiders or latest Stable with GitHub Copilot extension (Agent Mode enabled) |
-| **GitHub Copilot** | Copilot Pro, Pro+, Business, or Enterprise subscription |
-| **Workspace** | This repository cloned locally |
-| **App running** | `npm install && npm start` in `copilot-agent-and-mcp/` - backend on :4000, frontend on :5173 |
-| **Custom Agents lab** | Completed - you should have Planner, Implementer, Reviewer, and Feature Builder agents |
+| Requirement           | Details                                                                                      |
+| --------------------- | -------------------------------------------------------------------------------------------- |
+| **VS Code**           | Insiders or latest Stable with GitHub Copilot extension (Agent Mode enabled)                 |
+| **GitHub Copilot**    | Copilot Pro, Pro+, Business, or Enterprise subscription                                      |
+| **Workspace**         | This repository cloned locally                                                               |
+| **App running**       | `npm install && npm start` in `copilot-agent-and-mcp/` - backend on :4000, frontend on :5173 |
+| **Custom Agents lab** | Completed - you should have Planner, Implementer, Reviewer, and Feature Builder agents       |
 
 ### How Copilot Uses Skills
 
@@ -60,35 +60,31 @@ This means you can install many skills without bloating context - only what is r
 
 > **How this chains from earlier labs:**
 >
-> | Layer | What you built | How this skill uses it |
-> | --- | --- | --- |
-> | **Instructions (Lab 00)** | `testing.instructions.md` - Jest in `backend/tests/`, Cypress in `frontend/cypress/e2e/`, supertest, `data-testid` | Fixture templates follow these exact conventions |
-> | **Agents (Lab 01)** | TDD pipeline (Challenge 3) - Planner → Test Writer → Implementer → Reviewer | This skill gives the Test Writer agent structured fixture templates to work from |
-> | **Hooks (Lab 02)** | Auto-format hook | Generated test files are auto-formatted by the PostToolUse hook |
-> | **Part 1 (this lab)** | Data Seeder skill - generates `books.json` and `users.json` | This skill generates tests that validate the seeded data via API endpoints |
+> | Layer                     | What you built                                                                                                     | How this skill uses it                                                           |
+> | ------------------------- | ------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------- |
+> | **Instructions (Lab 00)** | `testing.instructions.md` - Jest in `backend/tests/`, Cypress in `frontend/cypress/e2e/`, supertest, `data-testid` | Fixture templates follow these exact conventions                                 |
+> | **Agents (Lab 01)**       | TDD pipeline (Challenge 3) - Planner → Test Writer → Implementer → Reviewer                                        | This skill gives the Test Writer agent structured fixture templates to work from |
+> | **Hooks (Lab 02)**        | Auto-format hook                                                                                                   | Generated test files are auto-formatted by the PostToolUse hook                  |
+> | **Part 1 (this lab)**     | Data Seeder skill - generates `books.json` and `users.json`                                                        | This skill generates tests that validate the seeded data via API endpoints       |
 
 ### Exercise 1.1 – Register the Skill Location and Create the Directory
 
 > **Best practice: Progressive disclosure.** The `SKILL.md` body stays under 500 lines and acts as an overview. Detailed scenario definitions live in a separate `scenarios.md` file that Copilot reads only when needed. The `seed-data.js` script executes without loading its source into context, saving tokens. References are one level deep - never nested. See [best practices: progressive disclosure](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices#progressive-disclosure-patterns).
 
-3.  In the Chat view, click the **gear icon** (⚙) at the top.
-4.  Select **Skills** from the menu.
-5.  Select **Create new skill**.
-6.  Choose `.github/skills` as the folder and enter `seeding-test-data` as the skill name.
+1.  Open VS Code Settings (**Ctrl+,**).
+2.  In the Chat view, click the **gear icon** (⚙) at the top and select **Skills** from the menu.
+3.  Choose `.github/skills` and enter `seeding-test-data` as the skill name. This creates the skill directory with a starter `SKILL.md`. Your structure should look like:
 
-This creates the skill directory with a starter `SKILL.md`. Your structure should look like:
-
-```
-.github/skills/
-└── seeding-test-data/
-    ├── SKILL.md
-    ├── scenarios.md          ← you will create this
-    └── scripts/
-        └── seed-data.js      ← you will create this
-```
+    ```
+    .github/skills/
+    └── seeding-test-data/
+        ├── SKILL.md
+        ├── scenarios.md          ← you will create this
+        └── scripts/
+            └── seed-data.js      ← you will create this
+    ```
 
 8.  Replace the generated `SKILL.md` content with the following:
-
 
 ````
 ---
@@ -265,18 +261,59 @@ const scenarioIdx = args.indexOf('--scenario');
 const volume = volumeIdx !== -1 ? args[volumeIdx + 1] : 'medium';
 const scenario = scenarioIdx !== -1 ? args[scenarioIdx + 1] : 'typical';
 
-const VOLUMES = { small: { books: 5, users: 3 }, medium: { books: 25, users: 10 }, large: { books: 100, users: 50 } };
+const VOLUMES = {
+  small: { books: 5, users: 3 },
+  medium: { books: 25, users: 10 },
+  large: { books: 100, users: 50 },
+};
 const counts = VOLUMES[volume] || VOLUMES.medium;
 
 // generated-by-copilot: sample data pools
-const AUTHORS = ['Harper Lee', 'George Orwell', 'Jane Austen', 'F. Scott Fitzgerald', 'J.R.R. Tolkien', 'Agatha Christie', 'Mark Twain', 'Virginia Woolf', 'Ernest Hemingway', 'Toni Morrison'];
-const TITLES = ['The Great Adventure', 'Silent Echoes', 'Midnight Garden', 'The Last Chapter', 'Burning Bridges', 'Ocean\'s Edge', 'Starlight Path', 'Forgotten Realms', 'The Iron Gate', 'Whispered Secrets'];
-const EDGE_TITLES = ["O'Reilly's Guide to C++", '"Quoted Title"', 'A', 'x'.repeat(200), '日本語タイトル', '<script>alert(1)</script>'];
+const AUTHORS = [
+  'Harper Lee',
+  'George Orwell',
+  'Jane Austen',
+  'F. Scott Fitzgerald',
+  'J.R.R. Tolkien',
+  'Agatha Christie',
+  'Mark Twain',
+  'Virginia Woolf',
+  'Ernest Hemingway',
+  'Toni Morrison',
+];
+const TITLES = [
+  'The Great Adventure',
+  'Silent Echoes',
+  'Midnight Garden',
+  'The Last Chapter',
+  'Burning Bridges',
+  "Ocean's Edge",
+  'Starlight Path',
+  'Forgotten Realms',
+  'The Iron Gate',
+  'Whispered Secrets',
+];
+const EDGE_TITLES = [
+  "O'Reilly's Guide to C++",
+  '"Quoted Title"',
+  'A',
+  'x'.repeat(200),
+  '日本語タイトル',
+  '<script>alert(1)</script>',
+];
 
-function generateId() { return crypto.randomBytes(8).toString('hex'); }
-function randomInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
-function randomItem(arr) { return arr[randomInt(0, arr.length - 1)]; }
-function generateIsbn() { return String(randomInt(1000000000000, 9999999999999)); }
+function generateId() {
+  return crypto.randomBytes(8).toString('hex');
+}
+function randomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+function randomItem(arr) {
+  return arr[randomInt(0, arr.length - 1)];
+}
+function generateIsbn() {
+  return String(randomInt(1000000000000, 9999999999999));
+}
 
 function generateBooks(count, useEdgeCases) {
   const books = [];
@@ -284,10 +321,19 @@ function generateBooks(count, useEdgeCases) {
   for (let i = 0; i < count; i++) {
     books.push({
       id: generateId(),
-      title: useEdgeCases && i < EDGE_TITLES.length ? EDGE_TITLES[i] : `${randomItem(titlePool)} ${i + 1}`,
+      title:
+        useEdgeCases && i < EDGE_TITLES.length
+          ? EDGE_TITLES[i]
+          : `${randomItem(titlePool)} ${i + 1}`,
       author: randomItem(AUTHORS),
       isbn: generateIsbn(),
-      year: useEdgeCases ? (i === 0 ? 1900 : i === 1 ? 2025 : randomInt(1950, 2024)) : randomInt(1950, 2024),
+      year: useEdgeCases
+        ? i === 0
+          ? 1900
+          : i === 1
+            ? 2025
+            : randomInt(1950, 2024)
+        : randomInt(1950, 2024),
       description: `A compelling story by a renowned author. Volume ${i + 1}.`,
     });
   }
@@ -322,7 +368,12 @@ if (!fs.existsSync(dataDir)) {
   const rootDir = path.resolve(__dirname, '..', '..', '..', '..');
   dataDir = path.resolve(rootDir, 'copilot-agent-and-mcp', 'backend', 'data');
 }
-if (!fs.existsSync(dataDir)) { console.error(`Error: ${dataDir} not found. Run from the workspace root or copilot-agent-and-mcp/ directory.`); process.exit(1); }
+if (!fs.existsSync(dataDir)) {
+  console.error(
+    `Error: ${dataDir} not found. Run from the workspace root or copilot-agent-and-mcp/ directory.`
+  );
+  process.exit(1);
+}
 
 let books, users;
 if (scenario === 'empty') {
@@ -331,12 +382,24 @@ if (scenario === 'empty') {
 } else {
   const useEdge = scenario === 'edge-cases';
   books = generateBooks(counts.books, useEdge);
-  users = generateUsers(counts.users, books.map((b) => b.id), useEdge);
+  users = generateUsers(
+    counts.users,
+    books.map((b) => b.id),
+    useEdge
+  );
 }
 
-fs.writeFileSync(path.join(dataDir, 'books.json'), JSON.stringify(books, null, 2));
-fs.writeFileSync(path.join(dataDir, 'users.json'), JSON.stringify(users, null, 2));
-console.log(`Seeded ${books.length} books and ${users.length} users (${volume}/${scenario}) into ${dataDir}`);
+fs.writeFileSync(
+  path.join(dataDir, 'books.json'),
+  JSON.stringify(books, null, 2)
+);
+fs.writeFileSync(
+  path.join(dataDir, 'users.json'),
+  JSON.stringify(users, null, 2)
+);
+console.log(
+  `Seeded ${books.length} books and ${users.length} users (${volume}/${scenario}) into ${dataDir}`
+);
 ```
 
 ### Exercise 1.2 – Test Automatic Discovery
@@ -348,10 +411,10 @@ console.log(`Seeded ${books.length} books and ${users.length} users (${volume}/$
 
 **Verify:**
 
-*   Copilot discovers and loads the `seeding-test-data` skill automatically based on the description match ("test data", "seed", `backend/data/`)
-*   Copilot follows the workflow steps from the skill: back up existing files, choose volume/scenario, run the seed script, validate output
-*   The seed script runs directly (`node .github/skills/.../seed-data.js`) rather than Copilot generating equivalent code - this is the **utility script pattern** from best practices (more reliable, saves tokens)
-*   Generated data matches the schemas defined in the skill (books have `id`, `title`, `author`, `isbn`, `year`, `description`)
+- Copilot discovers and loads the `seeding-test-data` skill automatically based on the description match ("test data", "seed", `backend/data/`)
+- Copilot follows the workflow steps from the skill: back up existing files, choose volume/scenario, run the seed script, validate output
+- The seed script runs directly (`node .github/skills/.../seed-data.js`) rather than Copilot generating equivalent code - this is the **utility script pattern** from best practices (more reliable, saves tokens)
+- Generated data matches the schemas defined in the skill (books have `id`, `title`, `author`, `isbn`, `year`, `description`)
 
 > **Try with the Database Migrator agent:** Switch to the **Database Migrator** agent (Lab 01) and ask: "Seed the database with edge-case test data, then validate all books have the required fields." The skill loads alongside the agent's migration-focused instructions.
 
@@ -365,23 +428,24 @@ You can also invoke skills explicitly using `/` slash commands:
 ```
 /seeding-test-data small edge-cases
 ```
+**Note:** this will blow away your existing data with the small edge-case set. Ask copilot to restore the original medium typical data to move forward with the next exercises. 
 
 **Verify:**
 
-*   The skill appears in the `/` menu with its description
-*   The `argument-hint` text ("Specify volume and scenario...") appears in the input field when selected
-*   Copilot follows the seeding workflow from the skill
+- The skill appears in the `/` menu with its description
+- The `argument-hint` text ("Specify volume and scenario...") appears in the input field when selected
+- Copilot follows the seeding workflow from the skill. Prompt `where do i see the resulting work done?` to confirm it ran the utility script and seeded the data. Steps will be provided on what to do next.
 
 ### Exercise 1.4 – Understand Frontmatter Controls
 
 Skills have two frontmatter properties that control visibility:
 
-| Setting | `/` menu | Auto-loaded by model | Use case |
-| --- | --- | --- | --- |
-| Default (both omitted) | Yes | Yes | General-purpose skills |
-| `user-invocable: false` | No | Yes | Background knowledge the model loads when relevant |
-| `disable-model-invocation: true` | Yes | No | Skills you only want to run on demand |
-| Both set | No | No | Effectively disabled |
+| Setting                          | `/` menu | Auto-loaded by model | Use case                                           |
+| -------------------------------- | -------- | -------------------- | -------------------------------------------------- |
+| Default (both omitted)           | Yes      | Yes                  | General-purpose skills                             |
+| `user-invocable: false`          | No       | Yes                  | Background knowledge the model loads when relevant |
+| `disable-model-invocation: true` | Yes      | No                   | Skills you only want to run on demand              |
+| Both set                         | No       | No                   | Effectively disabled                               |
 
 Try modifying your skill's frontmatter to experiment:
 
@@ -408,6 +472,7 @@ Try modifying your skill's frontmatter to experiment:
 > "Create a skill called generating-test-fixtures in `.github/skills/generating-test-fixtures/` for the Book Favorites app. Follow these requirements exactly:
 >
 > **SKILL.md** (under 200 lines in body):
+>
 > - name: `generating-test-fixtures` (gerund form, lowercase with hyphens)
 > - description: Write in third person. Mention that it generates Jest backend test fixtures and Cypress E2E test scaffolds for the Book Favorites app. Include trigger terms: test fixtures, test scaffolding, generate tests, backend tests, E2E tests, supertest, cypress. Mention it works with the seeding-test-data skill and the testing.instructions.md conventions.
 > - argument-hint: 'Describe what to test (e.g., "books API CRUD endpoints" or "login flow E2E")'
@@ -418,11 +483,13 @@ Try modifying your skill's frontmatter to experiment:
 >   4. References to `./templates.md` for detailed test templates and `./scripts/generate-fixtures.js` for automated fixture generation. Keep references one level deep.
 >
 > **templates.md** companion file:
+>
 > - A Jest/supertest template for GET, POST, PUT, DELETE endpoints with describe/it blocks, proper status code assertions, auth token handling, and error case tests (400 missing fields, 401 no token, 404 not found)
 > - A Cypress E2E template for login flow, viewing books list, and adding to favorites with `cy.get('[data-testid="..."]')` selectors
 > - Each template should have comments starting with 'generated-by-copilot: '
 >
 > **scripts/generate-fixtures.js** utility script:
+>
 > - Takes `--type` (backend or e2e) and `--resource` (e.g., books, favorites) as arguments
 > - Reads existing data from `backend/data/{resource}.json` to generate realistic test assertions (uses actual IDs and titles from the seeded data)
 > - Outputs a test file to the correct directory (`backend/tests/{resource}.test.js` or `frontend/cypress/e2e/{resource}.cy.js`)
@@ -434,18 +501,18 @@ Try modifying your skill's frontmatter to experiment:
 
 3.  Review the generated output against this checklist:
 
-| What to check | What to look for | If missing or wrong |
-| --- | --- | --- |
-| **Location** | Files in `.github/skills/generating-test-fixtures/` | Move the generated files to the correct path |
-| **SKILL.md `name`** | `generating-test-fixtures` (must match directory name) | Fix to match |
-| **SKILL.md `description`** | Third person, mentions Jest, Cypress, supertest, `testing.instructions.md` | Add specifics |
-| **SKILL.md body** | References `./templates.md` and `./scripts/generate-fixtures.js` (one level deep) | Add relative path links |
-| **SKILL.md body** | Under 200 lines, no performance/snapshot/CI sections | Remove extra sections |
-| **SKILL.md body** | Workflow with a copyable checklist | Add if missing |
-| **templates.md** | Jest template with describe/it, supertest, status codes, auth | Add missing templates |
-| **templates.md** | Cypress template with `cy.get('[data-testid="..."]')` | Add if missing |
-| **generate-fixtures.js** | Reads from `backend/data/`, generates test files, handles errors explicitly | Fix error handling |
-| **Comments** | All code comments start with `"generated-by-copilot: "` | Add the prefix |
+| What to check              | What to look for                                                                  | If missing or wrong                          |
+| -------------------------- | --------------------------------------------------------------------------------- | -------------------------------------------- |
+| **Location**               | Files in `.github/skills/generating-test-fixtures/`                               | Move the generated files to the correct path |
+| **SKILL.md `name`**        | `generating-test-fixtures` (must match directory name)                            | Fix to match                                 |
+| **SKILL.md `description`** | Third person, mentions Jest, Cypress, supertest, `testing.instructions.md`        | Add specifics                                |
+| **SKILL.md body**          | References `./templates.md` and `./scripts/generate-fixtures.js` (one level deep) | Add relative path links                      |
+| **SKILL.md body**          | Under 200 lines, no performance/snapshot/CI sections                              | Remove extra sections                        |
+| **SKILL.md body**          | Workflow with a copyable checklist                                                | Add if missing                               |
+| **templates.md**           | Jest template with describe/it, supertest, status codes, auth                     | Add missing templates                        |
+| **templates.md**           | Cypress template with `cy.get('[data-testid="..."]')`                             | Add if missing                               |
+| **generate-fixtures.js**   | Reads from `backend/data/`, generates test files, handles errors explicitly       | Fix error handling                           |
+| **Comments**               | All code comments start with `"generated-by-copilot: "`                           | Add the prefix                               |
 
 4.  Accept the generated files. Make any corrections identified during review.
 
@@ -454,7 +521,7 @@ Try modifying your skill's frontmatter to experiment:
 1.  First, ensure you have seeded data from Part 1. If not, run:
 
 ```bash
-node .github/skills/seeding-test-data/scripts/seed-data.js --volume small --scenario typical
+node .\.github\skills\seeding-test-data\scripts\seeding-data.js --volume small --scenario typical
 ```
 
 2.  Open a new Chat and ask a question that should trigger the skill:
@@ -463,11 +530,11 @@ node .github/skills/seeding-test-data/scripts/seed-data.js --volume small --scen
 
 **Verify:**
 
-*   The `generating-test-fixtures` skill loads automatically
-*   Copilot follows the workflow from the skill (identify endpoints, choose type, generate, run, review)
-*   Generated tests follow `testing.instructions.md` conventions - supertest, describe/it blocks, "should" descriptions
-*   Tests reference actual data from the seeded `books.json` (realistic IDs and titles, not placeholder values)
-*   Comments start with `"generated-by-copilot: "`
+- The `generating-test-fixtures` skill loads automatically
+- Copilot follows the workflow from the skill (identify endpoints, choose type, generate, run, review)
+- Generated tests follow `testing.instructions.md` conventions - supertest, describe/it blocks, "should" descriptions
+- Tests reference actual data from the seeded `books.json` (realistic IDs and titles, not placeholder values)
+- Comments start with `"generated-by-copilot: "`
 
 3.  Run the generated tests to verify they work:
 
@@ -482,7 +549,7 @@ This exercise demonstrates the **Part 1 → Part 2 chain**: seed data, then gene
 1.  Seed fresh edge-case data:
 
 ```bash
-node .github/skills/seeding-test-data/scripts/seed-data.js --volume small --scenario edge-cases
+node .\.github\skills\seeding-test-data\scripts\seeding-data.js  --volume small --scenario edge-cases
 ```
 
 2.  Generate test fixtures that validate the edge cases:
@@ -493,9 +560,9 @@ node .github/skills/seeding-test-data/scripts/seed-data.js --volume small --scen
 
 **Verify:**
 
-*   The generate-fixtures script uses actual edge-case data from `books.json` (special characters, boundary values)
-*   Tests assert specific edge-case values, not generic placeholders
-*   Both skills work together: Part 1 creates the data, Part 2 creates tests that validate it
+- The generate-fixtures script uses actual edge-case data from `books.json` (special characters, boundary values)
+- Tests assert specific edge-case values, not generic placeholders
+- Both skills work together: Part 1 creates the data, Part 2 creates tests that validate it
 
 3.  Try generating Cypress E2E fixtures:
 
@@ -505,9 +572,9 @@ node .github/skills/seeding-test-data/scripts/seed-data.js --volume small --scen
 
 **Verify:**
 
-*   E2E test file is created in `frontend/cypress/e2e/`
-*   Uses `cy.get('[data-testid="..."]')` selectors (not CSS classes)
-*   Tests follow the Cypress conventions from `testing.instructions.md`
+- E2E test file is created in `frontend/cypress/e2e/`
+- Uses `cy.get('[data-testid="..."]')` selectors (not CSS classes)
+- Tests follow the Cypress conventions from `testing.instructions.md`
 
 > **Tip:** You can also extract a skill from a conversation. After a multi-turn debugging session, ask: "Create a skill from how we just debugged that" - Copilot captures the procedure as a reusable skill.
 
@@ -515,27 +582,27 @@ node .github/skills/seeding-test-data/scripts/seed-data.js --volume small --scen
 
 ## Summary
 
-| What You Built | Type | Location |
-| --- | --- | --- |
-| Data Seeder | Skill (manual) | `.github/skills/seeding-test-data/` |
+| What You Built         | Type                                     | Location                                   |
+| ---------------------- | ---------------------------------------- | ------------------------------------------ |
+| Data Seeder            | Skill (manual)                           | `.github/skills/seeding-test-data/`        |
 | Test Fixture Generator | Skill (AI-generated via `/create-skill`) | `.github/skills/generating-test-fixtures/` |
 
 ### Key Takeaways
 
-*   **Skills are folders** with a `SKILL.md` and optional resources (scripts, templates, examples)
-*   **Automatic discovery**: Copilot matches skills by `description` - write specific, third-person descriptions with trigger terms
-*   **Slash commands**: Every skill is also a `/` command for explicit invocation
-*   **Progressive loading**: Only the relevant skill body and resources load into context - keep SKILL.md under 500 lines
-*   **Utility scripts**: Pre-made scripts are more reliable and token-efficient than generating code each time
-*   **Custom locations**: Use `chat.agentSkillsLocations` to organize skills alongside agents or share across projects
-*   **AI generation**: Use `/create-skill` to bootstrap skills from a detailed natural language prompt
-*   **Skill chaining**: Skills can build on each other - Part 1 seeds data, Part 2 generates tests against it
-*   **Complement agents**: Skills provide reusable knowledge; agents provide personas and tool restrictions - use both together
-*   **Portability**: Skills work across VS Code, Copilot CLI, and the Copilot coding agent
+- **Skills are folders** with a `SKILL.md` and optional resources (scripts, templates, examples)
+- **Automatic discovery**: Copilot matches skills by `description` - write specific, third-person descriptions with trigger terms
+- **Slash commands**: Every skill is also a `/` command for explicit invocation
+- **Progressive loading**: Only the relevant skill body and resources load into context - keep SKILL.md under 500 lines
+- **Utility scripts**: Pre-made scripts are more reliable and token-efficient than generating code each time
+- **Custom locations**: Use `chat.agentSkillsLocations` to organize skills alongside agents or share across projects
+- **AI generation**: Use `/create-skill` to bootstrap skills from a detailed natural language prompt
+- **Skill chaining**: Skills can build on each other - Part 1 seeds data, Part 2 generates tests against it
+- **Complement agents**: Skills provide reusable knowledge; agents provide personas and tool restrictions - use both together
+- **Portability**: Skills work across VS Code, Copilot CLI, and the Copilot coding agent
 
 ### Next Steps
 
-*   Browse community skills at [github/awesome-copilot](https://github.com/github/awesome-copilot) and [anthropics/skills](https://github.com/anthropics/skills)
-*   Try setting `user-invocable: false` to create background-knowledge skills that load automatically
-*   Review [skill authoring best practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices) for advanced patterns
-*   Visit [agentskills.io](https://agentskills.io/) for the full Agent Skills specification
+- Browse community skills at [github/awesome-copilot](https://github.com/github/awesome-copilot) and [anthropics/skills](https://github.com/anthropics/skills)
+- Try setting `user-invocable: false` to create background-knowledge skills that load automatically
+- Review [skill authoring best practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices) for advanced patterns
+- Visit [agentskills.io](https://agentskills.io/) for the full Agent Skills specification
