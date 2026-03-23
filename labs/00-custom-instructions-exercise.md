@@ -573,9 +573,10 @@ At this point you should have the following files:
 
 If any instruction file is missing from the `/instructions` list:
 
-1.  Right-click in the Chat view and select **Diagnostics**.
-2.  Review the **Custom Instructions** section.
-3.  Check for:
+1.  Open the **Output** panel (`Ctrl+Shift+U` or **View → Output**).
+2.  In the channel dropdown (top-right of the Output panel), select **GitHub Copilot Chat**.
+3.  Review the log entries for instruction loading, model routing, and error messages.
+4.  Look for:
     *   File path errors (wrong directory)
     *   YAML frontmatter syntax errors (missing `---` delimiters, bad indentation)
     *   `applyTo` glob patterns that don't match any files
