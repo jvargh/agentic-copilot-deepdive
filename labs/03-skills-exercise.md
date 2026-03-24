@@ -41,7 +41,7 @@ Agent Skills are folders of instructions, scripts, and resources that Copilot ca
 | **VS Code**           | Insiders or latest Stable with GitHub Copilot extension (Agent Mode enabled)           |
 | **GitHub Copilot**    | Copilot Pro, Pro+, Business, or Enterprise subscription                                |
 | **Workspace**         | This repository cloned locally                                                         |
-| **App running**       | `npm install && npm start` in root directory - backend on :4000, frontend on :5173     |
+| **App running**       | `npm install:all && npm start` in root directory - backend on :4000, frontend on :5173     |
 | **Custom Agents lab** | Completed - you should have Planner, Implementer, Reviewer, and Feature Builder agents |
 
 ### How Copilot Uses Skills
@@ -332,16 +332,38 @@ Type `/skills` to open the Configure Skills menu and confirm all skills are list
 
 **Verify:** Copilot loads the `javascript-typescript-jest` skill automatically (based on the trigger terms) and provides advice that includes mocking strategies, describe/it structure, and async test patterns.
 
-#### Step 5 - Observe skill composition
+#### Step 5 - Observe skill composition in a single workflow
 
-Notice how multiple skills can complement each other in a single workflow:
+In Steps 1–4, you tested each skill in isolation. Now run them together in **one continuous Chat session** to see how Copilot composes multiple skills on the same task.
 
-1.  Use `/generating-test-fixtures` to generate tests for a new resource
-2.  Use `/javascript-typescript-jest` (auto-loaded as background knowledge) to improve test quality
-3.  Use `/review-and-refactor` to verify the generated code follows project conventions
-4.  Use `/conventional-commit` to create a clean commit for the changes
+1.  Open a **new Chat session** (so the context is clean).
 
-> **Key insight:** Skills are composable. You can build a library of skills where each one handles a specific concern, and Copilot loads the relevant combination based on your task.
+2.  Send a single prompt that touches all four skills at once:
+
+    > "/generating-test-fixtures Check backend/routes/auth.js to see which endpoints are actually implemented. Generate Jest test fixtures for those endpoints with success and error cases. Then review the generated test file against our project's coding standards and refactor anything that doesn't comply. Finally, stage the new file and generate a conventional commit message for it."
+
+3.  **Watch the skill loading indicators** in the Chat panel. You should see Copilot load:
+    - `generating-test-fixtures` — triggered by the `/` invocation and the test generation request
+    - `javascript-typescript-jest` — auto-loaded as background knowledge (since Jest tests are being written)
+    - `review-and-refactor` — triggered by "review… against our project's coding standards"
+    - `conventional-commit` — triggered by "generate a conventional commit message"
+
+4.  **Verify the composed output:**
+
+    | Phase              | What to check                                                                        |
+    | ------------------ | ------------------------------------------------------------------------------------ |
+    | **Generate**       | Test file created in `backend/tests/` with only endpoints that exist in `auth.js`    |
+    | **Quality**        | Tests follow Jest best practices (proper describe/it nesting, async handling)        |
+    | **Review**         | Code checked against `.github/instructions/*.md` — any violations flagged and fixed  |
+    | **Commit**         | A conventional commit message generated from `git diff` (e.g., `test(auth): add Jest fixtures for auth endpoints`) |
+
+5.  Run the tests to confirm everything passes:
+
+    ```
+    npm run test:backend
+    ```
+
+> **Key insight:** Skills are composable. A single prompt can activate multiple skills simultaneously — each handles its specific concern while Copilot orchestrates them together. You don't need to invoke each skill separately; Copilot loads the relevant combination based on the trigger terms in your prompt.
 
 ---
 
