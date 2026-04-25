@@ -5,6 +5,42 @@
 > 
 > **This lab is a prerequisite for the** [**Custom Agents lab**](01-custom-agents-exercise.md)**.** Custom instructions define _what rules to follow_; custom agents define _who follows them_ and _with which tools_. Understanding instructions first makes agent design much clearer.
 
+## Table of Contents
+
+- [Overview](#overview)
+  - [Custom Instructions vs Custom Agents vs Agent Skills](#custom-instructions-vs-custom-agents-vs-agent-skills)
+  - [What You Will Learn](#what-you-will-learn)
+  - [Prerequisites (10 min)](#prerequisites-10-min)
+- [Instruction Files at a Glance](#instruction-files-at-a-glance)
+  - [Priority Order](#priority-order)
+- [Part 1 - Always-On Instructions with `copilot-instructions.md` (10 min)](#part-1---always-on-instructions-with-copilot-instructionsmd-10-min)
+  - [Exercise 1.1 - Examine the Existing Instructions](#exercise-11---examine-the-existing-instructions)
+  - [Exercise 1.2 - Enhance with Project Conventions](#exercise-12---enhance-with-project-conventions)
+  - [Exercise 1.3 - Verify Instructions Are Applied](#exercise-13---verify-instructions-are-applied)
+  - [Exercise 1.4 - Check the References Section](#exercise-14---check-the-references-section)
+- [Part 2 - File-Based Instructions with `/create-instruction` (20 min)](#part-2---file-based-instructions-with-create-instruction-20-min)
+  - [How File-Based Instructions Work](#how-file-based-instructions-work)
+  - [Exercise 2.1 - Generate React Instructions](#exercise-21---generate-react-instructions)
+  - [Exercise 2.2 - Generate Express Backend Instructions](#exercise-22---generate-express-backend-instructions)
+  - [Exercise 2.3 - Generate Jest and Cypress Testing Instructions](#exercise-23---generate-jest-and-cypress-testing-instructions)
+  - [Exercise 2.4 - Generate CSS Module Instructions](#exercise-24---generate-css-module-instructions)
+  - [Exercise 2.5 - Verify All Instructions with `/instructions`](#exercise-25---verify-all-instructions-with-instructions)
+  - [Exercise 2.6 - Test Pattern-Based Activation](#exercise-26---test-pattern-based-activation)
+  - [Exercise 2.7 - Extract an Instruction from a Conversation](#exercise-27---extract-an-instruction-from-a-conversation)
+  - [Exercise 2.8 - Understand `/create-instruction` vs `/init`](#exercise-28---understand-create-instruction-vs-init)
+- [Part 3 - Organize and Verify Instructions (5 min)](#part-3---organize-and-verify-instructions-5-min)
+  - [Exercise 3.1 - Review Your Instruction File Structure](#exercise-31---review-your-instruction-file-structure)
+  - [Exercise 3.2 - Troubleshoot with Diagnostics](#exercise-32---troubleshoot-with-diagnostics)
+  - [Exercise 3.3 - Configure Custom Instruction Locations](#exercise-33---configure-custom-instruction-locations)
+  - [Exercise 3.4 - Understand How Instructions Feed into Agents](#exercise-34---understand-how-instructions-feed-into-agents)
+- [Bonus Challenges](#bonus-challenges)
+  - [Challenge 1 - Security-Focused Instructions (10 min)](#challenge-1---security-focused-instructions-10-min)
+  - [Challenge 2 - Documentation Instructions (5 min)](#challenge-2---documentation-instructions-5-min)
+  - [Wrap-up: what you have built](#wrap-up-what-you-have-built)
+- [Key Takeaways](#key-takeaways)
+- [What's Next](#whats-next)
+- [Reference](#reference)
+
 ## Overview
 
 Custom instructions let you tell GitHub Copilot how your project works - coding conventions, naming patterns, architecture rules, testing commands - so it produces consistent, project-aligned code without you repeating yourself in every prompt.
@@ -219,11 +255,11 @@ File-based instructions use `.instructions.md` files stored in `.github/instruct
 2.  When prompted for a location, choose `.github/instructions` and enter `react` as the file name.
 3.  Copilot will ask you to describe the convention. Enter:
 
-> "Use Context7 to fetch the latest React and Redux Toolkit documentation first. Then create a concise instruction file (under 50 lines in the body) and save it as `.github/instructions/react.instructions.md`. In the YAML frontmatter, include `name: 'React Component Standards'`, a one-line `description`, and `applyTo: '**/*.jsx'` as a plain string - not an array, and do not include TSX. Conventions to enforce: use functional components with hooks only (no class components), import order is React → third-party → local components → styles, destructure props in the function signature with defaults, use useAppDispatch and useAppSelector from `../store/hooks` instead of raw useDispatch/useSelector from react-redux, use Redux Toolkit slices in `frontend/src/store/` for shared state and useState only for local UI state (dropdowns, form inputs), use CSS Modules with `import styles from '../styles/ComponentName.module.css'` and reference classes as `styles.className`, and always check for token before dispatching authenticated API calls - redirect to login if missing. Include one short good/bad code example for the Redux hooks rule. Do not add performance optimization, testing, or custom hooks sections - keep it focused on the conventions listed above."
+> Use Context7 to fetch the latest React and Redux Toolkit documentation first. Then create a concise instruction file (under 50 lines in the body) and save it as react.instructions.md. In the YAML frontmatter, include name: 'React Component Standards', a description written in the "Use when..." pattern that is keyword-rich for on-demand discovery — covering writing, refactoring, or reviewing React components, JSX files, Redux slices, and frontend JavaScript, and naming the topics it covers (functional components, import order, Redux hooks, local vs shared state, CSS Modules, auth guards), and applyTo: "frontend/**/*.{jsx,js}" as a plain string — not an array, scoped to the frontend folder so it auto-attaches to both JSX components and plain JS files like store slices and hooks while excluding backend .js files, and do not include TSX. Conventions to enforce: use functional components with hooks only (no class components), destructure props in the function signature with defaults, import order is React → third-party → local components → styles, use useAppDispatch and useAppSelector from ../store/hooks instead of raw useDispatch/useSelector from react-redux, use Redux Toolkit slices in store for shared state and useState only for local UI state (dropdowns, form inputs), use CSS Modules with import styles from '../styles/ComponentName.module.css' and reference classes as styles.className, and always check for a token before dispatching authenticated API calls — redirect to login if missing. Include one short good/bad code example for the Redux hooks rule. Do not add performance optimization, testing, or custom hooks sections — keep it focused on the conventions listed above.
 
-> **What happens:** Copilot calls Context7 to resolve and fetch docs for `react` and `@reduxjs/toolkit`, then uses those docs alongside your conventions to generate an instruction file with up-to-date patterns.
+> **Result:** Copilot calls Context7 to resolve and fetch docs for `react` and `@reduxjs/toolkit`, then uses those docs alongside your conventions to generate an instruction file with up-to-date patterns.
 
-1.  Copilot generates a `.instructions.md` file and opens it for review. **Do not accept it yet** - check it against the checklist below.
+1.  Copilot generates a `.instructions.md` file and opens it for review. **Do not accept it yet** but validate it against the checklist below.
 
 **Review checklist:**
 
@@ -353,7 +389,7 @@ applyTo: '**/*.js'
 - Write with `fs.writeFileSync()` with `JSON.stringify(data, null, 2)` for readability
 ```
 
-### **Exercise 2.3 - Generate Testing Instructions**
+### **Exercise 2.3 - Generate Jest and Cypress Testing Instructions**
 
 1.  Type `/create-instruction` in the Chat view.
 2.  When prompted for a location, choose `.github/instructions` and enter `testing` as the file name.
@@ -527,27 +563,28 @@ Verify with `/instructions` - confirm the newly generated instruction appears in
 | Command | Purpose | Creates |
 | --- | --- | --- |
 | `/create-instruction` | Generate a targeted, file-specific instruction | A single `.instructions.md` file with a focused `applyTo` pattern |
-| `/init` | Bootstrap comprehensive workspace-wide instructions | A `copilot-instructions.md` file covering the entire project |
+| `/init` | Bootstrap comprehensive workspace-wide instructions | A `copilot-instructions.md` file **and** updates to any existing `.instructions.md` files |
 
-Since this project already has a `copilot-instructions.md` file (which you enhanced in Exercise 1.2), running `/init` will offer to **update** the existing file rather than create a new one. This is a good opportunity to see how Copilot analyzes your project and what conventions it discovers on its own.
+Since this project already has a `copilot-instructions.md` file and the instruction files you created in Part 2, running `/init` will offer to **update all of them** rather than start from scratch. Copilot scans the workspace - project structure, dependencies, file patterns - and proposes changes across multiple files at once.
 
 1.  Open a new chat and type:
 
 > `/init`
 
-Copilot will scan the workspace - project structure, dependencies, file patterns - and propose an updated `copilot-instructions.md`. **Do not accept it immediately.** Instead, compare the proposed content with your current file:
+Copilot will propose updates to `copilot-instructions.md` **and** to any existing instruction files such as `react.instructions.md`, `express.instructions.md`, `testing.instructions.md`, and `css.instructions.md`. **Do not accept any file immediately.** Instead, review each proposed change:
 
 *   What did Copilot discover that you hadn't documented?
 *   Did it miss any conventions you added manually in Exercise 1.2?
 *   Would accepting the update overwrite important rules you wrote?
+*   Are the proposed changes to the scoped instruction files consistent with what you intended when you created them?
 
-You have three options:
+You have three options for **each file**:
 
-*   **Accept** the generated file if it improves on yours
+*   **Accept** the proposed update if it improves the existing content
 *   **Decline** and keep your hand-crafted version
 *   **Cherry-pick** useful additions from the proposal into your existing file manually
 
-> **Recommendation:** Decline the full replacement and instead copy any useful discoveries into your existing `copilot-instructions.md` by hand. This preserves your Exercise 1.2 work while incorporating anything Copilot found that you missed.
+> **Recommendation:** Review each file individually rather than accepting all at once. Decline full replacements where your Exercise 1.2 and Part 2 work already captures the convention well, and only accept or cherry-pick additions that genuinely fill a gap. This preserves the intent of each instruction file while incorporating anything Copilot found that you missed.
 
 ---
 
@@ -625,11 +662,46 @@ You should see the default locations:
 
 ```
 ---
+name: 'Naming Conventions for JavaScript'
+description: 'Use when writing, refactoring, or reviewing JavaScript utility functions, helpers, modules, variables, parameters, or any backend or frontend JS file - covers descriptive variable names, function naming, parameter naming, and constants.'
 applyTo: "**/*.js"
-description: "Enforces descriptive naming conventions for all JavaScript files"
 ---
-generated-by-copilot: Naming convention instruction
-- Use descriptive variable names; avoid single-letter names except in loop counters.
+
+# Naming Conventions for JavaScript
+
+## Variable Names
+
+- Use full descriptive words for all variables - never single letters except in tight loop counters (`i`, `j`).
+- Prefer domain nouns over generic placeholders: `numbers`, `total`, `average` instead of `arr`, `t`, `a`.
+- Boolean variables start with `is`, `has`, or `should` (e.g., `isEmpty`, `hasValue`).
+
+## Function and Parameter Names
+
+- Function names start with a verb that describes the action: `calculateAverage`, `formatPrice`, `validateInput`.
+- Parameter names describe the role of the value, not its type: `numbers` not `arr`, `userId` not `id`.
+- Avoid abbreviations - write `index` not `idx`, `response` not `res` (except inside Express handlers where `req`/`res` is the framework convention).
+
+## Constants
+
+- Use `UPPER_SNAKE_CASE` for true compile-time constants (`MAX_RETRY_COUNT`, `DEFAULT_TIMEOUT_MS`).
+- Use `camelCase` for all other `const` bindings, including imported modules and computed values.
+
+## Example
+
+```js
+// Good: descriptive names that read like prose
+function calculateAverage(numbers) {
+  const total = numbers.reduce((sum, value) => sum + value, 0);
+  const average = total / numbers.length;
+  return average;
+}
+
+// Bad: cryptic single-letter names
+function calc(a) {
+  const t = a.reduce((s, v) => s + v, 0);
+  return t / a.length;
+}
+
 ```
 
 Open the Chat view and type `/instructions`. Confirm that `.github/instructions/docs/conventions/naming.instructions.md` now appears in the loaded instructions list alongside the ones from `.github/instructions/`.
@@ -681,16 +753,16 @@ Custom agents add **tool restrictions**, **model preferences**, and **persona-sp
 Create a security instruction file that applies to all JavaScript files and enforces OWASP best practices:
 
 1.  Type `/create-instruction` in the Chat view.
-2.  When prompted for a location, choose `.github/instructions` and enter `security` as the file name.
+2.  When prompted for a location, choose `.github/instructions` and enter `owasp-web-security` as the file name.
 3.  Enter this description:
 
-> "Use Context7 to fetch the latest OWASP security guidelines first. Then create a concise instruction file (under 40 lines in the body) and save it as `.github/instructions/security.instructions.md`. In the YAML frontmatter, include `name: 'Security Standards'`, a one-line `description`, and `applyTo: '**/*.{js,jsx}'` as a plain string - not an array. Conventions to enforce: validate all route parameters, query strings, and request body fields before processing - use allowlists and reject unexpected input with 400 status, never use `eval()`, `Function()`, `setTimeout(string)`, or any dynamic code execution, never hardcode secrets or API keys in source code - use environment variables, prevent SQL/NoSQL injection with parameterized queries, sanitize all user input before rendering to prevent XSS - never use `dangerouslySetInnerHTML` with unsanitized data, never use wildcard `*` for CORS `Access-Control-Allow-Origin` in production - configure CORS to allow only known frontend origins, apply rate limiting on authentication endpoints (`/api/auth/login`, `/api/auth/register`), never expose stack traces or internal error details in API responses. Do not add deployment, CI/CD, or logging sections."
+> "Use Context7 to fetch the latest OWASP security guidelines first. Then create a concise instruction file (under 40 lines in the body) and save it as `.github/instructions/owasp-web-security.instructions.md`. In the YAML frontmatter, include `name: 'OWASP Web Security Standards'`, a one-line `description`, and `applyTo: '**/*.{js,jsx}'` as a plain string - not an array. Conventions to enforce: validate all route parameters, query strings, and request body fields before processing - use allowlists and reject unexpected input with 400 status, never use `eval()`, `Function()`, `setTimeout(string)`, or any dynamic code execution, never hardcode secrets or API keys in source code - use environment variables, prevent SQL/NoSQL injection with parameterized queries, sanitize all user input before rendering to prevent XSS - never use `dangerouslySetInnerHTML` with unsanitized data, never use wildcard `*` for CORS `Access-Control-Allow-Origin` in production - configure CORS to allow only known frontend origins, apply rate limiting on authentication endpoints (`/api/auth/login`, `/api/auth/register`), never expose stack traces or internal error details in API responses. Do not add deployment, CI/CD, or logging sections."
 
 1.  Review the generated file against this checklist:
 
 | Field | What to look for | If missing |
 | --- | --- | --- |
-| `name` | Something like "Security Standards" | Add `name: 'Security Standards'` |
+| `name` | Something like "OWASP Web Security Standards" | Add `name: 'OWASP Web Security Standards'` |
 | `applyTo` | Must be `'**/*.{js,jsx}'` as a **plain string** (not an array) | Replace with `applyTo: '**/*.{js,jsx}'` |
 | Body | Mentions input validation with allowlists | Add the rule |
 | Body | Mentions no `eval()` / `Function()` / dynamic code execution | Add the rule |
@@ -707,12 +779,12 @@ Create a security instruction file that applies to all JavaScript files and enfo
 
 ```
 ---
-name: 'Security Standards'
+name: 'OWASP Web Security Standards'
 description: 'OWASP-aligned security conventions for all JavaScript and JSX files'
 applyTo: '**/*.{js,jsx}'
 ---
 
-# Security Standards
+# OWASP Web Security Standards
 
 ## Input Validation
 - Validate all route parameters, query strings, and request body fields before processing
@@ -739,6 +811,16 @@ applyTo: '**/*.{js,jsx}'
 - Configure CORS to allow only known frontend origins
 - Apply rate limiting on authentication endpoints (`/api/auth/login`, `/api/auth/register`)
 ```
+
+**Verify it works:**
+
+1.  Open `backend/routes/auth.js` in the editor.
+2.  In a new chat, ask:
+
+    > "Add a new POST endpoint `/api/auth/reset-password` that accepts an email and a new password."
+
+3.  Expand the **References** section under the reply and confirm `owasp-web-security.instructions.md` is listed.
+4.  Verify the generated code includes input validation (allowlist or schema check), returns a generic `{ error: '...' }` response on failure (no stack traces), and does not hardcode any secret. If it omits these, the instruction was not picked up - re-check the `applyTo` glob.
 
 ### Challenge 2 - Documentation Instructions (5 min)
 
@@ -786,6 +868,26 @@ applyTo: '**/*.md'
 - Start with a brief one-line summary of what the document covers
 - Use numbered lists for sequential steps, bullet lists for unordered items
 ```
+
+**Verify it works:**
+
+1.  Open or create `backend/routes/README.md` in the editor.
+2.  In a new chat, ask:
+
+    > "Add a 'Getting started' section to this README explaining how to add a new route file."
+
+3.  Expand the **References** section under the reply and confirm `docs.instructions.md` is listed.
+4.  Verify the generated Markdown uses sentence-case headings (`Getting started`, not `Getting Started`), includes a `Prerequisites` section, and uses fenced code blocks with language identifiers (e.g., ` ```bash `). If those rules are missing, re-check the `applyTo` glob.
+
+### Wrap-up: what you have built
+
+With both challenges complete, your `.github/instructions/` folder now spans **six** scoped instruction files plus the always-on `copilot-instructions.md`:
+
+*   **React, Express, Testing, CSS** (Part 2) - core code conventions
+*   **OWASP Web Security** (Challenge 1) - security guardrails on every JS/JSX file
+*   **Documentation** (Challenge 2) - consistent Markdown across the repo
+
+This is the full instruction layer that the agents you build in the [Custom Agents lab](01-custom-agents-exercise.md) will inherit automatically - giving every Planner, Implementer, Reviewer, and Test Writer the same conventions and security posture without re-stating them in each agent file.
 
 ---
 
