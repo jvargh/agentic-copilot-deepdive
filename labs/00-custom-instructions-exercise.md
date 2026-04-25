@@ -895,10 +895,10 @@ This is the full instruction layer that the agents you build in the [Custom Agen
 
 | Concept | Key Learning |
 | --- | --- |
-| `**copilot-instructions.md**` | Always-on, project-wide instructions - the foundation for every chat request |
-| `**.instructions.md**` **files** | Targeted instructions with `applyTo` patterns - right rules for the right files |
-| `**/create-instruction**` | AI-generated instruction files from natural language or conversation context |
-| `**/instructions**` | Quick verification of which instruction files are loaded and active |
+| `copilot-instructions.md` | Always-on, project-wide instructions - the foundation for every chat request |
+| `.instructions.md` | Targeted instructions with `applyTo` patterns - right rules for the right files |
+| `/create-instruction` | AI-generated instruction files from natural language or conversation context |
+| `/instructions` | Quick verification of which instruction files are loaded and active |
 | **Priority order** | Personal > Repository > Organization - user preferences always win |
 | **Diagnostics** | Right-click Chat > Diagnostics to troubleshoot missing or broken instructions |
 | **Foundation for agents** | Instructions define conventions; agents (next lab) define personas and tool access |
