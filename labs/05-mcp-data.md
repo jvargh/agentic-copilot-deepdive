@@ -7,7 +7,6 @@
 
 ## Table of Contents
 
-*   [Recover Original Books Data (If Corrupted)](#recover-original-books-data-if-corrupted)
 *   [Objective](#objective)
 *   [Prerequisites](#prerequisites)
 *   [Exercise 1: Generate a Feature Using MCP Data](#exercise-1-generate-a-feature-using-mcp-data)
@@ -15,82 +14,9 @@
 *   [Exercise 3: Extend the MCP Server with a New Tool](#exercise-3-extend-the-mcp-server-with-a-new-tool)
 *   [Troubleshooting](#troubleshooting)
 *   [Summary](#summary)
+*   [Recover Original Books Data (If Corrupted)](#recover-original-books-data-if-corrupted)
 
-## Recover Original Books Data (If Corrupted)
-
-If the `backend/data/books.json` file contains test data or has been modified, follow these steps to restore the original book catalog before starting the exercises.
-
-### Option 1: Manual Restore from Backup
-
-If you have a backup file (`books.backup.json`), restore it directly:
-
-**Windows PowerShell:**
-
-```powershell
-Copy-Item -Path "backend/data/books.backup.json" -Destination "backend/data/books.json" -Force
-```
-
-**Verify the restore:**
-
-```powershell
-# Check the first entry (should be "To Kill a Mockingbird" by Harper Lee)
-Get-Content -Path "backend/data/books.json" -TotalCount 20
-```
-
-**For Linux/macOS:**
-
-```bash
-cp backend/data/books.backup.json backend/data/books.json
-head -20 backend/data/books.json
-```
-
-### Option 2: Use Copilot to Generate Recovery Steps
-
-In **Agent Mode**, ask Copilot to help recover the original data. The MCP server becomes your recovery mechanism:
-
-**Your question to Copilot:**
-
-```
-The backend/data/books.json file contains 5 test books instead of the original 20+ book catalog.
-I have a backup at backend/data/books.backup.json. What steps should I take to restore the original books.json from the backup?
-If a backup doesn't exist, what approaches can I use to rebuild the original catalog from the book-database MCP server?
-```
-
-**Copilot's response will suggest two paths:**
-
-**Path A: Restore from Backup (Fastest)**
-
-```powershell
-Copy-Item -Path "backend/data/books.backup.json" -Destination "backend/data/books.json" -Force
-```
-
-Verify the restore succeeded:
-
-```powershell
-$content = Get-Content -Path "backend/data/books.json" | ConvertFrom-Json
-Write-Host "Restored $($content.Count) books"
-```
-
-**Path B: Rebuild from MCP Server (If backup doesn't exist)**
-
-Ask Copilot to orchestrate the recovery using the MCP tools:
-
-```
-Use the book-database MCP server to retrieve the full list of books via the list_books tool.
-Then transform the results into backend/data/books.json format: [ { "id": "1", "title": "To Kill a Mockingbird", "author": "Harper Lee" }, ...].
-Generate the complete file with all available books from the MCP server, preserving the exact structure and order.
-```
-
-Copilot will:
-
-1. Call `list_books()` from the MCP server to fetch all books
-2. Transform the results to match the backend schema (id, title, author)
-3. Generate the corrected `backend/data/books.json` file
-4. Verify the file was created with the correct number of books
-
-This demonstrates MCP's value as a **recovery data source** — if your local data is corrupted, the MCP-exposed service becomes your single source of truth.
-
----
+> **Note:** If the `backend/data/books.json` file contains test data or has been modified, follow the steps in [Recover Original Books Data (If Corrupted)](#recover-original-books-data-if-corrupted) to restore the original book catalog before starting the exercises.
 
 ## Objective
 
@@ -334,8 +260,76 @@ Using the book-database tools, find all books by Charles Dickens. Then look up t
 
 In this lab you exercised the MCP server across three practical scenarios:
 
-| Exercise | What You Did                           | Key Takeaway                                                       |
-| -------- | -------------------------------------- | ------------------------------------------------------------------ |
-| 1        | Generated a feature with real MCP data | MCP eliminates hallucinated placeholder data in code generation    |
-| 2        | Generated test fixtures from MCP       | Real data from MCP servers produces reliable, accurate test suites |
-| 3        | Extended the server with a new tool    | The full cycle: implement → build → test → integrate               |
+## Recover Original Books Data (If Corrupted)
+
+If the `backend/data/books.json` file contains test data or has been modified, follow these steps to restore the original book catalog before starting the exercises.
+
+### Option 1: Manual Restore from Backup
+
+If you have a backup file (`books.backup.json`), restore it directly:
+
+**Windows PowerShell:**
+
+```powershell
+Copy-Item -Path "backend/data/books.backup.json" -Destination "backend/data/books.json" -Force
+```
+
+**Verify the restore:**
+
+```powershell
+# Check the first entry (should be "To Kill a Mockingbird" by Harper Lee)
+Get-Content -Path "backend/data/books.json" -TotalCount 20
+```
+
+**For Linux/macOS:**
+
+```bash
+cp backend/data/books.backup.json backend/data/books.json
+head -20 backend/data/books.json
+```
+
+### Option 2: Use Copilot to Generate Recovery Steps
+
+In **Agent Mode**, ask Copilot to help recover the original data. The MCP server becomes your recovery mechanism:
+
+**Your question to Copilot:**
+
+```
+The backend/data/books.json file contains 5 test books instead of the original 20+ book catalog.
+I have a backup at backend/data/books.backup.json. What steps should I take to restore the original books.json from the backup?
+If a backup doesn't exist, what approaches can I use to rebuild the original catalog from the book-database MCP server?
+```
+
+**Copilot's response will suggest two paths:**
+
+**Path A: Restore from Backup (Fastest)**
+
+```powershell
+Copy-Item -Path "backend/data/books.backup.json" -Destination "backend/data/books.json" -Force
+```
+
+Verify the restore succeeded:
+
+```powershell
+$content = Get-Content -Path "backend/data/books.json" | ConvertFrom-Json
+Write-Host "Restored $($content.Count) books"
+```
+
+**Path B: Rebuild from MCP Server (If backup doesn't exist)**
+
+Ask Copilot to orchestrate the recovery using the MCP tools:
+
+```
+Use the book-database MCP server to retrieve the full list of books via the list_books tool.
+Then transform the results into backend/data/books.json format: [ { "id": "1", "title": "To Kill a Mockingbird", "author": "Harper Lee" }, ...].
+Generate the complete file with all available books from the MCP server, preserving the exact structure and order.
+```
+
+Copilot will:
+
+1. Call `list_books()` from the MCP server to fetch all books
+2. Transform the results to match the backend schema (id, title, author)
+3. Generate the corrected `backend/data/books.json` file
+4. Verify the file was created with the correct number of books
+
+This demonstrates MCP's value as a **recovery data source** — if your local data is corrupted, the MCP-exposed service becomes your single source of truth.
