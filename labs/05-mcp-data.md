@@ -71,9 +71,7 @@ The backend books data (`backend/data/books.json`) uses a different schema than 
 
 Ask Copilot to generate a new backend endpoint that serves curated book recommendations, using real data from the MCP server to populate the initial dataset:
 
-```
-I want to add a "Staff Picks" feature to the BookFaves app. Using the book-database MCP tools, look up these classic novels and get their full details: "1984", "The Great Gatsby", "Pride and Prejudice", "The Hobbit", and "To Kill a Mockingbird". Then create a new file backend/routes/staffPicks.js that serves a GET /staff-picks endpoint returning these books as curated recommendations. Include the title, author, ISBN, summary, and publication date from the MCP data. Follow the same coding patterns used in the existing route files (books.js, favorites.js).
-```
+> I want to add a "Staff Picks" feature to the BookFaves app. Using the book-database MCP tools, look up these classic novels and get their full details: "1984", "The Great Gatsby", "Pride and Prejudice", "The Hobbit", and "To Kill a Mockingbird". Then create a new file `backend/routes/staffPicks.js` that serves a `GET /staff-picks` endpoint returning these books as curated recommendations. Include the title, author, ISBN, summary, and publication date from the MCP data. Follow the same coding patterns used in the existing route files (`books.js`, `favorites.js`).
 
 ### Step 3: Verify the Generated Code
 
@@ -90,9 +88,7 @@ Check the generated route file:
 
 Ask Copilot to register the new route:
 
-```
-Register the staffPicks route in backend/routes/index.js at the path /staff-picks. Follow the same pattern used for the other routes.
-```
+> Register the `staffPicks` route in `backend/routes/index.js` at the path `/staff-picks`. Follow the same pattern used for the other routes.
 
 ### Step 5: Restart the Backend Server
 
