@@ -1,13 +1,41 @@
 # Lab 02: Agent Hooks in VS Code - Automate Workflows with Lifecycle Events
 
 > \[!NOTE\]  
-> This lab uses the **Agent Hooks** feature (Preview) in VS Code to execute custom shell commands at key lifecycle points during agent sessions. You will build hooks for the **Book Favorites** app (`copilot-agent-and-mcp/`).
+> This lab uses the **Agent Hooks** feature (Preview) in VS Code to execute custom shell commands at key lifecycle points during agent sessions. 
 > 
 > **Prerequisite:** Complete the [Custom Agents lab](custom-agents-exercise.md) first. This lab builds on the agents you created there (Planner, Implementer, Reviewer, Feature Builder, and the FB worker agents).
 
+
+
+## Table of Contents
+
+*   [Overview](#overview)
+    *   [What You Will Learn](#what-you-will-learn)
+    *   [Prerequisites](#prerequisites)
+    *   [Hook Lifecycle Quick Reference](#hook-lifecycle-quick-reference)
+*   [Part 1 - Global Hooks: Format and Security](#part-1---global-hooks-format-and-security-15-min)
+    *   [Exercise 1.1 - Install Prettier](#exercise-11---install-prettier)
+    *   [Exercise 1.2 - Create the Auto-Format Hook](#exercise-12---create-the-auto-format-hook)
+    *   [Exercise 1.3 - Test with the Implementer Agent](#exercise-13---test-with-the-implementer-agent)
+    *   [Exercise 1.4 - Create the Security Guard Hook](#exercise-14---create-the-security-guard-hook)
+    *   [Exercise 1.5 - Test the Security Guard](#exercise-15---test-the-security-guard)
+*   [Part 2 - Agent-Scoped Hooks](#part-2---agent-scoped-hooks-15-min)
+    *   [Exercise 2.1 - Enable Agent-Scoped Hooks](#exercise-21---enable-agent-scoped-hooks)
+    *   [Exercise 2.2 - Generate and Wire a PreToolUse Hook for the FB Implementer](#exercise-22---generate-and-wire-a-pretooluse-hook-for-the-fb-implementer)
+    *   [Exercise 2.3 - Test the Agent-Scoped Data Protection Hook](#exercise-23---test-the-agent-scoped-data-protection-hook)
+    *   [Exercise 2.4 - Compare Global vs Agent-Scoped Hooks](#exercise-24---compare-global-vs-agent-scoped-hooks)
+    *   [Exercise 2.5 - Explore the Hooks UI](#exercise-25---explore-the-hooks-ui)
+    *   [Exercise 2.6 - Understand How Instructions, Agents, and Hooks Feed into Skills](#exercise-26---understand-how-instructions-agents-and-hooks-feed-into-skills)
+*   [Troubleshooting](#troubleshooting)
+*   [Key Takeaways](#key-takeaways)
+*   [What's Next](#whats-next)
+*   [Reference](#reference)
+
 ## Overview
 
-Hooks provide **deterministic, code-driven automation** that runs at specific points in an agent's lifecycle. Unlike instructions that guide behavior, hooks **execute your code** with guaranteed outcomes. Use hooks to enforce security policies, automate code quality, create audit trails, inject context, and control approvals.
+Hooks provide **deterministic, code-driven automation** that runs at specific points in an agent's lifecycle. Unlike instructions that guide behavior, hooks **execute your code** with guaranteed outcomes. Use hooks to enforce security policies, automate code quality, create audit trails, inject context, and control approvals. 
+
+In this lab, you will create both global hooks (that apply to all agents) and agent-scoped hooks (that only run for specific agents) to see how they can enhance your agent workflows.
 
 ### What You Will Learn
 
@@ -52,22 +80,17 @@ Hooks provide **deterministic, code-driven automation** that runs at specific po
 
 ### Exercise 1.1 - Install Prettier
 
-Install Prettier from the `copilot-agent-and-mcp/` directory:
+Run these two commands from the **repository root** (the folder containing `package.json`, `backend/`, and `frontend/`):
 
-```
+```bash
 npm install --save-dev prettier
 ```
 
-1.  Create a Prettier config named `.prettierrc` in the **workspace root** (i.e., the `src/` folder, **not** inside `copilot-agent-and-mcp/`):
+```bash
+node -e "require('fs').writeFileSync('.prettierrc', JSON.stringify({semi:true,singleQuote:true,tabWidth:2,trailingComma:'es5'},null,2)+'\n')"
+```
 
-```
-{
-  "semi": true,
-  "singleQuote": true,
-  "tabWidth": 2,
-  "trailingComma": "es5"
-}
-```
+The second command creates `.prettierrc` at the repository root with the correct formatting settings.
 
 ### Exercise 1.2 - Create the Auto-Format Hook
 
@@ -146,7 +169,7 @@ Then create the hook config `format.json`:
 
 > "Create a new file called `backend/test-format.js` with a function that uses inconsistent formatting: mixed tabs and spaces, double quotes in some places and single quotes in others, and missing semicolons."
 
-1.  After the agent creates the file, check whether Prettier ran automatically. Use prompt `don't show me current file, show me the original with inconsistent formatting: mixed tabs and spaces, double quotes in some places and single quotes in others, and missing semicolons` to see the unformatted version, which it should display in the chat.
+3.  After the agent creates the file, check whether Prettier ran automatically. Use prompt `don't show me current file, show me the original with inconsistent formatting: mixed tabs and spaces, double quotes in some places and single quotes in others, and missing semicolons` to see the unformatted version, which it should display in the chat.
 
 **Verify:**
 
@@ -321,11 +344,21 @@ For a **safe** command (e.g., `npm run test:backend`):
 
 ### Exercise 2.1 - Enable Agent-Scoped Hooks
 
-Open VS Code settings (`Ctrl+,`) and enable below. This can also be done from Settings > Chat: Use Custom Agent Hooks.
+Open VS Code settings (`Ctrl+,`) and enable agent-scoped hooks:
 
-```
+```json
 {
-  "chat.useCustomAgentHooks": true
+  "chat.useHooks": true
+}
+```
+
+> **Note:** `chat.useHooks` replaces the older `chat.useCustomAgentHooks` setting. If you see `chat.useCustomAgentHooks` in documentation or examples, use `chat.useHooks` instead.
+
+Optionally, configure a custom hook files location using `chat.hookFilesLocations` if you want to store global hook configs somewhere other than `.github/hooks/`:
+
+```json
+{
+  "chat.hookFilesLocations": [".github/hooks", ".vscode/hooks"]
 }
 ```
 
@@ -400,7 +433,7 @@ Now switch to the default **Copilot** agent (Agent Mode) and try the same prompt
 | **Scope** | Run for all agents | Run only when the specific agent is active |
 | **Location** | Separate `.json` files in `.github/hooks/` | `hooks` property in the agent's `.agent.md` frontmatter |
 | **Use case** | Organization-wide policies (security, audit) | Agent-specific behavior (protect data on FB Implementer) |
-| **Setting required** | None | `chat.useCustomAgentHooks: true` |
+| **Setting required** | None | `chat.useHooks: true` |
 
 ### Exercise 2.5 - Explore the Hooks UI
 
@@ -466,7 +499,7 @@ Instructions define **what rules to follow**; agents define **who follows them w
 | Timeout errors | Increase the `timeout` value in the hook config (default is 30 seconds) |
 | JSON parse errors | Ensure your hook script outputs valid JSON to stdout - use `JSON.stringify()` |
 | Hook runs for wrong tools | Check the `tool_name` filtering in your script |
-| Agent-scoped hooks not running | Set `chat.useCustomAgentHooks` to `true` in VS Code settings |
+| Agent-scoped hooks not running | Set `chat.useHooks` to `true` in VS Code settings |
 | Can't find hook logs | Open Output panel, select **GitHub Copilot Chat Hooks** channel |
 
 ---
@@ -482,6 +515,15 @@ Instructions define **what rules to follow**; agents define **who follows them w
 | **PostToolUse** | Run quality checks after edits - formatters, linters, tests |
 | **Three permission decisions** | `deny` (block), `ask` (prompt user), or allow (continue) |
 | **Security** | Review all hook scripts - they run with VS Code's permissions |
+
+## What's Next
+
+With your hooks automating code quality and security enforcement, proceed to the [Skills lab](03-skills-exercise.md) where you will:
+
+*   Package domain expertise into reusable `SKILL.md` files that load on-demand
+*   Build skills that work alongside your hooks - skills guide what to do, hooks enforce how it's done
+*   Create project-specific skills for API scaffolding, data migration validation, and code review
+*   Share skills across agents, the Copilot CLI, and the coding agent
 
 ## Reference
 
