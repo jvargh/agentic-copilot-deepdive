@@ -58,21 +58,12 @@ Instead of typing "always use single quotes and semicolons" in every chat, you w
 ### What You Will Learn
 
 | Part | Topic | Description |
-| --- | --- | --- |`r`n| Pre | [Prerequisites](#prerequisites) | VS Code, Copilot subscription, repo cloned, Context7 MCP configured, app running |
+| --- | --- | --- |
+| Pre | [Prerequisites](#prerequisites) | VS Code, Copilot subscription, repo cloned, Context7 MCP configured, app running |
 | 1 | [Always-On Instructions with `copilot-instructions.md`](#part-1---always-on-instructions-with-copilot-instructionsmd-10-min) | Understand always-on vs file-based instructions; enhance `copilot-instructions.md` with project conventions |
 | 2 | [File-Based Instructions with `/create-instruction`](#part-2---file-based-instructions-with-create-instruction-20-min) | Generate targeted `.instructions.md` files with `applyTo` glob patterns; extract instructions from conversations |
 | 3 | [Organize and Verify Instructions](#part-3---organize-and-verify-instructions-5-min) | Use `/instructions` to verify loaded files; troubleshoot with Diagnostics; understand instruction priority |
-|   |   | **Total** | **45 min** |
 
-### Prerequisites (10 min)
-
-| Requirement | Details |
-| --- | --- |
-| **VS Code** | Insiders or latest Stable with GitHub Copilot extension (Agent Mode enabled) |
-| **GitHub Copilot** | Copilot Pro, Pro+, Business, or Enterprise subscription |
-| **Workspace** | This repository cloned locally |
-| **Context7 MCP** | Context7 MCP server configured in VS Code (see setup below) |
-| **App running** | Install dependencies and start the app (see steps below) |
 
 #### Install and Start the App
 
