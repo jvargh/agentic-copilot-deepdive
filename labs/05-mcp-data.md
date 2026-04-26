@@ -94,20 +94,50 @@ Ask Copilot to register the new route:
 
 Node.js/Express loads routes at startup, so the running server process doesn't know about the new `staffPicks.js` file. Restart the backend to pick up the changes:
 
-1. In the terminal running `npm start`, press `Ctrl+C` to stop the server
-2. Restart:
+1. In the terminal running `npm start`, click into it and press `Ctrl+C` to stop the server. You may need to press it twice and answer `Y` to "Terminate batch job".
+2. Confirm the prompt returns, then verify nothing is still bound to port 4000:
 
-```
-npm start
-```
+   ```powershell
+   Test-NetConnection -ComputerName localhost -Port 4000 -InformationLevel Quiet
+   ```
+
+   This must return `False` before restarting. If it still returns `True`, kill the stray process:
+
+   ```powershell
+   Get-NetTCPConnection -LocalPort 4000 | Select-Object -ExpandProperty OwningProcess | ForEach-Object { Stop-Process -Id $_ -Force }
+   ```
+
+3. Restart from the repo root:
+
+   ```powershell
+   npm start
+   ```
 
 ### Step 6: Test the Endpoint
 
+In PowerShell, use `Invoke-RestMethod` (the `curl` alias on Windows PowerShell behaves differently from real cURL):
+
+```powershell
+Invoke-RestMethod -Uri http://localhost:4000/api/staff-picks
 ```
+
+On Linux/macOS or Git Bash, use cURL:
+
+```bash
 curl http://localhost:4000/api/staff-picks
 ```
 
-**Expected:** JSON response with books, each containing accurate details pulled from the MCP catalog.
+**Expected:** JSON response with books, each containing accurate details pulled from the MCP catalog. For example, the last entry returned by `Invoke-RestMethod` looks like:
+
+```text
+title   : To Kill a Mockingbird
+author  : Harper Lee
+ISBN    : 0446310789
+date    : 1960-07-11
+summary : Set in the American South during the 1930s, this Pulitzer Prize-winning novel follows the story of Scout Finch and her
+          father Atticus as he defends a black man accused of rape, exploring themes of racial injustice, moral growth, and the
+          loss of innocence.
+```
 
 ### Step 7: Run Backend Tests
 
@@ -204,6 +234,17 @@ Test these cases in the Inspector:
 | 2   | `{ "author": "dostoevsky" }` | Crime and Punishment and The Brothers Karamazov             |
 | 3   | `{ "author": "DICKENS" }`    | Great Expectations, A Tale of Two Cities, David Copperfield |
 | 4   | `{ "author": "zzzzz" }`      | Not-found message                                           |
+
+> **Note:** MCP Inspector renders each schema field as its own input box. If you only see a single text box labeled `author` (no JSON editor), type the **value only** — not the full JSON wrapper. Use the table below for the plain-value inputs:
+>
+> | #   | `author` field value | Expected                                                    |
+> | --- | -------------------- | ----------------------------------------------------------- |
+> | 1   | `Tolkien`            | The Hobbit and The Lord of the Rings                        |
+> | 2   | `dostoevsky`         | Crime and Punishment and The Brothers Karamazov             |
+> | 3   | `DICKENS`            | Great Expectations, A Tale of Two Cities, David Copperfield |
+> | 4   | `zzzzz`              | Not-found message                                           |
+>
+> Pasting `{ "author": "DICKENS" }` into the plain text box would send the literal string `{ "author": "DICKENS" }` as the author value, which matches no books.
 
 ### Step 5: Restart the MCP Server in VS Code
 
