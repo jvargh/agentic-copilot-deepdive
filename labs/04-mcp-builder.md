@@ -302,19 +302,19 @@ This opens a browser UI showing all registered tools.
 
 Select each tool in the Inspector sidebar, fill in the parameter fields, and click **Run**.
 
-| #   | Tool                    | Parameter(s)                                                      | Expected                                                  |
-| --- | ----------------------- | ----------------------------------------------------------------- | --------------------------------------------------------- |
-| 1   | `get_book_by_isbn`      | **isbn**: `0451524935`                                            | Title, author, publication date, and summary for "1984"   |
-| 2   | `get_book_by_isbn`      | **isbn**: `0547928227`                                            | Details for "The Hobbit" by J.R.R. Tolkien                |
-| 3   | `get_book_by_isbn`      | **isbn**: `0000000000`                                            | Actionable not-found error message                        |
-| 4   | `get_book_by_isbn`      | **isbn**: `123` (too short)                                       | Zod validation error (ISBN must be 10 characters)         |
-| 5   | `get_book_by_title`     | **title**: `1984`                                                 | Details for "1984" by George Orwell                       |
-| 6   | `get_book_by_title`     | **title**: `pride and prejudice` (lowercase)                      | Details for "Pride and Prejudice" (case-insensitive match)|
-| 7   | `get_book_by_title`     | **title**: `Nonexistent Book`                                     | Actionable not-found error message                        |
-| 8   | `get_books_by_titles`   | **titles**: `["The Hobbit", "1984"]`                              | One entry per title with full details                     |
-| 9   | `get_books_by_titles`   | **titles**: `["1984", "Unknown Title"]`                           | "1984" found, "Unknown Title" marked as not found         |
-| 10  | `get_books_by_isbn_list`| **isbns**: `["0451524935", "0547928227"]`                         | One entry per ISBN with full details                      |
-| 11  | `get_books_by_isbn_list`| **isbns**: `["0451524935", "0000000000"]`                         | First ISBN found, second marked as not found              |
+| #   | Tool                    | Parameter(s)                                           | Expected                                     |
+| --- | ----------------------- | ------------------------------------------------------ | -------------------------------------------- |
+| 1   | `search_books`          | **query**: `1984`                                      | Details for "1984" by George Orwell          |
+| 2   | `search_books`          | **query**: `The Hobbit`                                | ISBN `0547928227`, author J.R.R. Tolkien     |
+| 3   | `search_books`          | **query**: `Orwell`                                    | All books by George Orwell                   |
+| 4   | `search_books`          | **query**: `1984`, **limit**: `1`                      | Single result for "1984"                     |
+| 5   | `search_books`          | **query**: `fiction`, **limit**: `5`, **offset**: `5`  | Paginated results (second page of 5)         |
+| 6   | `search_books`          | **query**: `1984`, **response_format**: `json`         | JSON structured response instead of markdown |
+| 7   | `search_books`          | **query**: `nonexistentbook99`                         | Empty results or not-found message           |
+| 8   | `get_book_by_isbn`      | **isbn**: `0451524935`                                 | Title, author, publication date, and summary for "1984" |
+| 9   | `get_book_by_title`     | **title**: `The Hobbit`                                | Details for "The Hobbit" by J.R.R. Tolkien   |
+| 10  | `get_books_by_titles`   | **titles**: `["1984", "The Hobbit"]`                   | One entry per title with full details        |
+| 11  | `get_books_by_isbn_list`| **isbns**: `["0451524935", "0547928227"]`              | One entry per ISBN with full details         |
 
 ### Validation
 
