@@ -3,9 +3,53 @@
 > \[NOTE\]   
 > This lab uses the **Custom Agents** feature in VS Code to create specialized AI personas tailored to specific development tasks. You will build agents for the **Book Favorites** app.
 
-## Overview
+## Table of Contents
 
-Custom agents enable you to configure GitHub Copilot to adopt different personas - each with its own behavior, available tools, and instructions. Instead of manually selecting tools and crafting prompts every time, you define an `.agent.md` file once and switch to that persona instantly from the Agents dropdown.
+*   [Overview](#overview)
+    *   [What You Will Learn](#what-you-will-learn)
+    *   [Prerequisites](#prerequisites)
+    *   [Time Estimate](#time-estimate)
+    *   [Success Tips](#success-tips)
+*   [What You Will Build](#what-you-will-build)
+*   [Part 1 - Your First Custom Agent: The Planner](#part-1---your-first-custom-agent-the-planner-10-min)
+    *   [Exercise 1.1 - Create a Planning Agent](#exercise-11---create-a-planning-agent)
+    *   [Exercise 1.2 - Test the Planning Agent](#exercise-12---test-the-planning-agent)
+    *   [Exercise 1.3 - Verify Tool Restrictions](#exercise-13---verify-tool-restrictions)
+*   [Part 2 - An Implementation Agent with Handoffs](#part-2---an-implementation-agent-with-handoffs-15-min)
+    *   [Exercise 2.1 - Update the Planner with a Handoff](#exercise-21---update-the-planner-with-a-handoff)
+    *   [Exercise 2.2 - Create the Implementation Agent](#exercise-22---create-the-implementation-agent)
+    *   [Exercise 2.3 - Create the Code Review Agent](#exercise-23---create-the-code-review-agent)
+    *   [Exercise 2.4 - Test the Handoff Workflow](#exercise-24---test-the-handoff-workflow)
+    *   [Common pitfalls after Exercises 2.1 - 2.4](#common-pitfalls-after-exercises-21---24)
+*   [Part 3 - (Optional) Generate an Agent with AI](#part-3---optional-generate-an-agent-with-ai-10-min)
+    *   [Exercise 3.1 - Use /create-agent](#exercise-31---use-create-agent)
+    *   [Exercise 3.2 - Refine the Generated Agent](#exercise-32---refine-the-generated-agent)
+    *   [Exercise 3.3 - Test the Migration Agent](#exercise-33---test-the-migration-agent)
+*   [Part 4 - Orchestration Patterns with Subagents](#part-4---orchestration-patterns-with-subagents-25-min)
+    *   [Exercise 4.0 - Configure a Custom Agent File Location](#exercise-40---configure-a-custom-agent-file-location-2-min)
+    *   [Part 4A - Coordinator and Worker Pattern](#part-4a---coordinator-and-worker-pattern-15-min)
+        *   [Exercise 4A.1 - Create the Coordinator Agent](#exercise-4a1---create-the-coordinator-agent)
+        *   [Exercise 4A.2 - Create the Worker Agents](#exercise-4a2---create-the-worker-agents)
+        *   [Exercise 4A.3 - Test Coordinator Orchestration](#exercise-4a3---test-coordinator-orchestration)
+    *   [Part 4B - Multi-perspective Code Review](#part-4b---multi-perspective-code-review-10-min)
+        *   [Exercise 4B.1 - Create the Multi-perspective Reviewer](#exercise-4b1---create-the-multi-perspective-reviewer)
+        *   [Exercise 4B.2 - Test Multi-perspective Review](#exercise-4b2---test-multi-perspective-review)
+        *   [Exercise 4B.3 - Compare Single vs Multi-perspective Review](#exercise-4b3---compare-single-vs-multi-perspective-review)
+*   [Part 5 - Visibility and Organization](#part-5---visibility-and-organization-5-min)
+    *   [Exercise 5.1 - View All Custom Agents](#exercise-51---view-all-custom-agents)
+    *   [Exercise 5.2 - Understand user-invocable vs disable-model-invocation](#exercise-52---understand-user-invocable-vs-disable-model-invocation)
+    *   [Exercise 5.3 - Review the Complete Agent Map](#exercise-53---review-the-complete-agent-map)
+    *   [Exercise 5.4 - Compare Orchestration Patterns](#exercise-54---compare-orchestration-patterns)
+    *   [Exercise 5.5 - Understand How Agents Feed into Hooks](#exercise-55---understand-how-agents-feed-into-hooks)
+*   [Bonus Challenges](#bonus-challenges)
+    *   [Challenge 1 - API Design Agent](#challenge-1---api-design-agent-15-min)
+    *   [Challenge 2 - Multi-Model Agent](#challenge-2---multi-model-agent-5-min)
+    *   [Challenge 3 - Rewire the Pipeline for TDD](#challenge-3---rewire-the-pipeline-for-tdd-10-min)
+*   [Key Takeaways](#key-takeaways)
+*   [What's Next](#whats-next)
+*   [Reference](#reference)
+
+## Overview
 
 ### What You Will Learn
 
@@ -74,6 +118,8 @@ Each arrow is a **handoff** - a one-click button that switches you to the next a
 
 ### Exercise 1.1 - Create a Planning Agent
 
+**Option A: Manual creation:**
+
 1.  In the Chat view, click the **gear icon** (⚙) at the top.
 2.  Select **Custom Agents**.
 3.  Select **Create new custom agent**.
@@ -87,11 +133,6 @@ description: Analyze the codebase and generate implementation plans without modi
 name: Planner
 tools: ['web/fetch', 'search', 'search/codebase', 'search/usages']
 model: ['Claude Sonnet 4', 'GPT-4o']
-handoffs:
-  - label: Start Implementation
-    agent: Implementer
-    prompt: Implement the plan outlined above.
-    send: false
 ---
 
 # Planning instructions
@@ -111,6 +152,12 @@ You analyze codebases and create simple implementation plans.
 2. **Steps** - numbered implementation steps (new files first, then imports/registrations)
 3. **Files** - list of files to create/modify, with creation order
 ```
+
+**Option B: Use** `/create-agent` **command:**
+
+> Create a custom agent with name "Planner" and description "Analyze the codebase and generate implementation plans without modifying files." Use tools: web/fetch, search, search/codebase, search/usages. Prefer models: Claude Sonnet 4, GPT-4o. The agent should have "Planning instructions" as the main heading. Include Rules section: 1) Never edit files - read-only, 2) Create numbered step-by-step plans, 3) Reference existing files when relevant, 4) Enforce dependency order where new files must be created and verified before any existing file imports them. Include Output Format section: 1) Goal - what we're building, 2) Steps - numbered implementation steps with new files first then imports/registrations, 3) Files - list of files to create/modify with creation order.
+
+**Note:** you should see the built-in agent-customization skill in use to create the agent file from the prompt. Review the generated file to ensure it matches the expected content above.
 
 ### Exercise 1.2 - Test the Planning Agent
 
@@ -155,6 +202,8 @@ Try a follow-up prompt that asks the **Planner** agent to make changes:
 
 ### Exercise 2.1 - Update the Planner with a Handoff
 
+**Option A: Manual creation:**
+
 1.  Click the **gear icon** (⚙) > **Custom Agents**.
 2.  Select **Planner** from the list to open it for editing.
 3.  Update the frontmatter to add a handoff:
@@ -174,9 +223,15 @@ handoffs:
 <earlier content unchanged>
 ```
 
+**Option B: Use** `/create-agent` **command:**
+
+> Update the existing "Planner" agent to add handoffs with label "Start Implementation" to agent "Implementer" with prompt "Implement the plan outlined above. Follow each step carefully and run tests after each change." Keep all existing configuration unchanged.
+
 **Note:** Since the Implementer agent doesn't exist yet, this handoff won't work until you create it in the next step.
 
 ### Exercise 2.2 - Create the Implementation Agent
+
+**Option A: Manual creation:**
 
 1.  Click the **gear icon** (⚙) > **Custom Agents** > **Create new custom agent**.
 2.  Choose `.github/agents`, enter `Implementer` as the file name.
@@ -206,18 +261,31 @@ You implement features step by step.
 4. Never add `require()` or `import` for a file until you have verified it exists on disk
 5. Start comments with "generated-by-copilot: "
 6. Run tests after changes: `npm run test:backend` for backend, `npm run test:frontend` for frontend
+7. **CRITICAL:** Always run `npm run test` before accepting any feature implementation - if tests fail, discard changes immediately
 
 ## Key Patterns
 
 - Backend routes: `module.exports = function createXRouter(deps) { ... }`
 - CSS Modules: use camelCase class names (`.bookCard` not `.book-card`)
 - User data: always default new fields `const list = user.newField || [];`
-- New user fields: add to auth.js registration and both data files
+- New fixture users / data must be added to **`backend/data/users.json`**, NOT `backend/data/test-users.json` -
+  the test file is overwritten from the source by `backend/tests/copy-test-data.sh` on every `npm run test:backend` run
+- Test app wiring (`createApiRouter({ ... })` inside `backend/tests/*.test.js`) must pass the **same dep keys**
+  as `backend/server.js`: `usersFile, booksFile, reviewsFile, readJSON, writeJSON, authenticateToken, SECRET_KEY`.
+  Missing a key (e.g. `reviewsFile`) makes unrelated routes return 404
+- Tests share a single JSON-backed user store with no per-test reset. Pick distinct, unused `bookId` values
+  across tests in the same file, or add a `beforeEach` that restores fixtures from the source files
 ```
+
+**Option B: Use** `/create-agent` **command:**
+
+> Create a custom agent with name "Implementer" and description "Implement features based on a plan - edits files, runs tests, and commits." Use tools: edit/editFiles, edit/createFiles, read/terminalLastCommand, search, search/codebase. Add handoffs with label "Request Code Review". The handoff agent called "Reviewer" should have "Implementation instructions" as the main heading with subtitle "You implement features step by step." Include Rules section: 1) Follow the plan step by step, 2) Create new files using createFiles tool - never use terminal to create source files, 3) After creating a new file read it back to verify it exists before proceeding, 4) Never add require() or import for a file until you have verified it exists on disk, 5) Start comments with "generated-by-copilot: ", 6) Run tests after changes: npm run test:backend for backend, npm run test:frontend for frontend. Include Key Patterns section: Backend routes use "module.exports = function createXRouter(deps) { ... }", CSS Modules use camelCase class names (.bookCard not .book-card), User data always default new fields "const list = user.newField || \[\];", New user fields add to auth.js registration and both data files.
 
 **Note:** The Implementer has edit tools, so it can modify files. It also has a handoff to the Reviewer for code review after implementation. Reviewer doesn't exist yet, so that will be the next step.
 
 ### Exercise 2.3 - Create the Code Review Agent
+
+**Option A: Manual creation:**
 
 1.  Click the **gear icon** (⚙) > **Custom Agents** > **Create new custom agent**.
 2.  Choose `.github/agents`, enter `Reviewer` as the file name.
@@ -245,6 +313,7 @@ You review code changes and provide feedback.
 2. **Functionality** - Code works, handles errors
 3. **Quality** - Readable, follows patterns
 4. **Imports** - Every `require()` and `import` resolves to an existing file
+5. **Test data flow** - new fixture users present in `backend/data/users.json` (the source for `copy-test-data.sh`), not just `test-users.json`; test app wiring matches `backend/server.js` deps (including `reviewsFile`); tests do not assume per-test data resets
 
 ## Output Format
 
@@ -252,6 +321,10 @@ You review code changes and provide feedback.
 - **Issues** - list any problems found
 - **Suggestions** - improvements if needed
 ```
+
+**Option B: Use** `/create-agent` **command:**
+
+> Create a custom agent with name "Reviewer" and description "Review code changes for security, quality, and best practices." Use tools: search, search/codebase, search/usages, web/fetch. Add handoffs with label "Fix Review Findings". The agent should have "Code review instructions" as the main heading with subtitle "You review code changes and provide feedback." Include Review Focus section: 1) Security - Input validation, authorization, 2) Functionality - Code works, handles errors, 3) Quality - Readable, follows patterns, 4) Imports - Every require() and import resolves to an existing file. Include Output Format section: Summary with APPROVE or REQUEST CHANGES, Issues listing any problems found, Suggestions for improvements if needed.
 
 ### Exercise 2.4 - Test the Handoff Workflow
 
@@ -268,18 +341,35 @@ You review code changes and provide feedback.
 
 **Verify:**
 
-*   The Planner produces a plan without editing files
-*   The "Start Implementation" handoff button appears after the plan
-*   Clicking the handoff switches to the Implementer agent
-*   The Implementer has access to write tools and can modify files
-*   The "Request Code Review" handoff button appears after implementation
-*   The Reviewer checks for security issues and produces a structured report
-*   If the Reviewer finds issues (REQUEST CHANGES), the **"Fix Review Findings"** handoff button appears
-*   Clicking it switches back to the Implementer with the findings as context
+*   The **Planner agent** produces a plan without editing files
+*   The **Start Implementation** dropdown appears after the plan
+*   Clicking the handoff switches to the **Implementer agent**
+*   The **Implementer agent** has access to write tools and can modify files
+*   The **Request Code Review** handoff dropdown appears after implementation
+*   The **Reviewer agent** checks for security issues and produces a structured report
+*   If the **Reviewer agent** finds issues (REQUEST CHANGES), the **"Fix Review Findings"** handoff button appears
+*   Clicking it switches back to the **Implementer agent** with the findings as context
+
+> **⚠️ IMPORTANT: Testing Before Accepting Changes**  
+> When new features are added or code changes are made, **ALWAYS run** `npm run test` **before accepting changes**. If any tests fail, discard the changes immediately as they could be breaking changes that affect existing functionality. Only accept implementations that pass all existing tests.
 
 ---
 
-## Part 3 - Generate an Agent with AI (10 min)
+### ⚠️ **Common pitfalls after Exercises 2.1 - 2.4**
+
+> \[!IMPORTANT\]  
+> When the Implementer adds a new backend route + tests in Exercise 2.4, three repo-specific issues commonly cause `npm run test` to fail. The instructions added in Exercise 2.2 / 2.3 above are designed to prevent them, but if you skipped them or copied an older version, check these first.  
+> All three issues surface as confusing 404s or message mismatches that look like routing bugs but are actually configuration / fixture / state issues. The Reviewer agent's `Test data flow` review focus item is intended to catch these before you run `npm run test`.
+
+| # | Symptom | Root cause | Fix |
+| --- | --- | --- | --- |
+| 1 | All endpoints on the new route return `404` in tests, even though the route file looks correct | The test file's `createApiRouter({ ... })` call is missing a dep key (commonly `reviewsFile`) that `backend/server.js` passes. The router factory silently misconfigures and the route doesn't mount. | Make the test wiring mirror [backend/server.js](../backend/server.js) exactly: `usersFile, booksFile, reviewsFile, readJSON, writeJSON, authenticateToken, SECRET_KEY`. |
+| 2 | Tests for a new fixture user (e.g. `testuser`) all fail with `404 User not found` | The user was added only to `backend/data/test-users.json`. [backend/tests/copy-test-data.sh](../backend/tests/copy-test-data.sh) overwrites `test-users.json` from `backend/data/users.json` before every test run, wiping the new user. | Add the fixture user to `**backend/data/users.json**` (the source). The copy script will propagate it to `test-users.json`. |
+| 3 | One test in a sequence fails with the wrong message (e.g. "removed" instead of "not in list"), even though earlier tests passed | Tests in the same file share state through the JSON-backed user store. An earlier test added `bookId: '1'`, so a later "non-existent book" test using the same id sees stale data. | Use a `bookId` that no other test in the file touches, **or** add a `beforeEach` that restores fixtures from `backend/data/users.json` and `backend/data/books.json`. |
+
+---
+
+## Part 3 - (Optional) Generate an Agent with AI (10 min)
 
 **Objective:** Use the `/create-agent` command to generate a custom agent from a natural language description, then refine the output.
 
@@ -308,7 +398,7 @@ Check the generated file against this checklist:
 | Body instructions | Says to create backups before changes | Add a backup rule |
 | Body instructions | Executes immediately - no separate confirmation step | Remove any "ask before proceeding" rules |
 
-1.  Accept the file if it looks reasonable - you will refine it in the next exercise.
+Accept the file if it looks reasonable - you will refine it in the next exercise.
 
 ### Exercise 3.2 - Refine the Generated Agent
 
@@ -385,6 +475,9 @@ Upon execution, provide:
 *   It validates the result (correct JSON, all books have the field, record count matches)
 *   It shows a before/after comparison of the schema
 *   After validation passes, it suggests clicking the **"Review Migration"** handoff button
+
+> **⚠️ CRITICAL: Test Validation Required**  
+> Before accepting any migration changes, you **MUST run** `npm run test` to ensure all tests pass. Data migrations can have unexpected side effects that break existing functionality. If tests fail after migration, immediately restore from backup and discard changes.
 
 ---
 
@@ -1160,6 +1253,15 @@ handoffs:
 | **Workspace agents** | Store in`.github/agents/` for team-wide sharing via version control |
 | **AI generation** | Use`/create-agent` to bootstrap new agents from a description |
 | **Security** | Review tool lists and instructions - agents should follow principle of least privilege |
+
+## What's Next
+
+With your custom agents in place, proceed to the [Hooks lab](02-hooks-exercise.md) where you will:
+
+*   Trigger agents automatically on file saves, Git events, and code changes
+*   Chain hooks with your Planner and Implementer agents to automate repetitive workflows
+*   Configure pre- and post-commit hooks that invoke the Reviewer agent automatically
+*   Build event-driven pipelines that respond to test failures and build events
 
 ## Reference
 
