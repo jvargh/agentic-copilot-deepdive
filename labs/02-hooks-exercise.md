@@ -2,7 +2,7 @@
 
 > **Mode:** VS Code (Agent Mode)  
 > **Duration:** ~30 min  
-> **Prerequisite:** [Lab 01 - Custom Agents](01-custom-agents-exercise.md) — you should have Planner, Implementer, Reviewer, and Feature Builder agents in place
+> **Prerequisite:** [Lab 01 - Custom Agents](01-custom-agents-exercise.md)
 
 ## Table of Contents
 
@@ -10,13 +10,13 @@
     *   [What You Will Learn](#what-you-will-learn)
     *   [Prerequisites](#prerequisites)
     *   [Hook Lifecycle Quick Reference](#hook-lifecycle-quick-reference)
-*   [Part 1 - Global Hooks: Format and Security](#part-1---global-hooks-format-and-security-15-min)
+*   [Part 1 - Global Hooks: Format and Security](#part-1---global-hooks-format-and-security)
     *   [Exercise 1.1 - Install Prettier](#exercise-11---install-prettier)
     *   [Exercise 1.2 - Create the Auto-Format Hook](#exercise-12---create-the-auto-format-hook)
     *   [Exercise 1.3 - Test with the Implementer Agent](#exercise-13---test-with-the-implementer-agent)
     *   [Exercise 1.4 - Create the Security Guard Hook](#exercise-14---create-the-security-guard-hook)
     *   [Exercise 1.5 - Test the Security Guard](#exercise-15---test-the-security-guard)
-*   [Part 2 - Agent-Scoped Hooks](#part-2---agent-scoped-hooks-15-min)
+*   [Part 2 - Agent-Scoped Hooks](#part-2---agent-scoped-hooks)
     *   [Exercise 2.1 - Enable Agent-Scoped Hooks](#exercise-21---enable-agent-scoped-hooks)
     *   [Exercise 2.2 - Generate and Wire a PreToolUse Hook for the FB Implementer](#exercise-22---generate-and-wire-a-pretooluse-hook-for-the-fb-implementer)
     *   [Exercise 2.3 - Test the Agent-Scoped Data Protection Hook](#exercise-23---test-the-agent-scoped-data-protection-hook)
@@ -68,7 +68,7 @@ In this lab, you will create both global hooks (that apply to all agents) and ag
 
 ---
 
-## Part 1 - Global Hooks: Format and Security (15 min)
+## Part 1 - Global Hooks: Format and Security 
 
 **Objective:** Create two global hooks that apply to all agents: a `PostToolUse` hook that auto-formats code after every edit, and a `PreToolUse` hook that blocks dangerous terminal commands.
 
@@ -330,7 +330,7 @@ For a **safe** command (e.g., `npm run test:backend`):
 
 ---
 
-## Part 2 - Agent-Scoped Hooks (15 min)
+## Part 2 - Agent-Scoped Hooks
 
 **Objective:** Add hooks directly to custom agent files using the `hooks` frontmatter property. These hooks only run when that specific agent is active - other agents are unaffected. You will enhance agents from the Custom Agents lab.
 
