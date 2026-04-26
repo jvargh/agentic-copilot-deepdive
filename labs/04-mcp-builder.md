@@ -224,9 +224,7 @@ dist/data/books-details.json
 
 ### Step 1: Prompt for Tool Implementation
 
-```
-Using the MCP Builder skill best practices, implement four tools in the book-database MCP server: get_book_by_isbn, get_book_by_title, get_books_by_titles, and get_books_by_isbn_list. Use server.registerTool() (the modern API). Each tool should have Zod input schemas with .strict(), proper title, description, inputSchema, and annotations (all are read-only, non-destructive, idempotent). Return formatted text responses. Handle not-found cases with clear error messages.
-```
+> Using the MCP Builder skill best practices, implement four tools in the book-database MCP server: get_book_by_isbn, get_book_by_title, get_books_by_titles, and get_books_by_isbn_list. Use server.registerTool() (the modern API). Each tool should have Zod input schemas with .strict(), proper title, description, inputSchema, and annotations (all are read-only, non-destructive, idempotent). Return formatted text responses. Handle not-found cases with clear error messages.
 
 ### Step 2: Review the Implementation
 
