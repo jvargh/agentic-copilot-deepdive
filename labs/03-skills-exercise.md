@@ -1,9 +1,28 @@
 # Lab 03: Agent Skills in VS Code - Build Reusable AI Capabilities
 
 > \[!NOTE\]  
-> This lab uses the **Agent Skills** feature in VS Code to create portable, reusable capabilities that GitHub Copilot loads on demand. You will build skills for the **Book Favorites** app (`copilot-agent-and-mcp/`).
+> This lab uses the **Agent Skills** feature in VS Code to create portable, reusable capabilities that GitHub Copilot loads on demand.
 >
 > **Prerequisite:** Complete the [Custom Agents lab](custom-agents-exercise.md) first. This lab adds a skill that works alongside the agents you created there.
+
+## Table of Contents
+
+*   [Overview](#overview)
+    *   [Agent Skills vs Custom Instructions vs Custom Agents](#agent-skills-vs-custom-instructions-vs-custom-agents)
+    *   [What You Will Learn](#what-you-will-learn)
+    *   [Prerequisites](#prerequisites)
+    *   [How Copilot Uses Skills](#how-copilot-uses-skills)
+*   [Part 1 – Generate a Skill with /create-skill: Test Fixture Generator](#part-1--generate-a-skill-with-create-skill-test-fixture-generator-30-min)
+    *   [Exercise 1.1 – Generate the Test Fixture Generator Skill](#exercise-11--generate-the-test-fixture-generator-skill)
+    *   [Exercise 1.2 – Test the Fixture Generator](#exercise-12--test-the-fixture-generator)
+    *   [Exercise 1.3 – Generate Fixtures for a Different Resource](#exercise-13--generate-fixtures-for-a-different-resource)
+    *   [Exercise 1.4 – Understand Frontmatter Controls](#exercise-14--understand-frontmatter-controls)
+*   [Part 2 – Extract and Install Community Skills](#part-2--extract-and-install-community-skills-30-min)
+    *   [Exercise 2.1 – Extract a Skill from a Debugging Conversation](#exercise-21--extract-a-skill-from-a-debugging-conversation-15-min)
+    *   [Exercise 2.2 – Install Community Skills from awesome-copilot](#exercise-22--install-community-skills-from-awesome-copilot-15-min)
+*   [Summary](#summary)
+    *   [Key Takeaways](#key-takeaways)
+    *   [Next Steps](#next-steps)
 
 ## Overview
 
@@ -70,7 +89,7 @@ This means you can install many skills without bloating context - only what is r
 /create-skill
 ```
 
-1.  Copilot will ask you to describe the skill. Enter this prompt:
+2.  Copilot will ask you to describe the skill. Enter this prompt:
 
 > "Create a skill called generating-test-fixtures in `.github/skills/generating-test-fixtures/` for the Book Favorites app. Follow these requirements exactly:
 >
@@ -103,7 +122,7 @@ This means you can install many skills without bloating context - only what is r
 >
 > Do NOT add performance testing, snapshot testing, or CI/CD sections. Keep it focused on backend fixture generation."
 
-1.  Review the generated output against this checklist:
+3.  Review the generated output against this checklist:
 
 | What to check                  | What to look for                                                                  | If missing or wrong                          |
 | ------------------------------ | --------------------------------------------------------------------------------- | -------------------------------------------- |
@@ -117,7 +136,7 @@ This means you can install many skills without bloating context - only what is r
 | **generate-fixtures.js**       | Reads from `backend/data/`, generates test files, handles errors explicitly       | Fix error handling                           |
 | **Comments**                   | All code comments start with `"generated-by-copilot: "`                           | Add the prefix                               |
 
-1.  Accept the generated files. Make any corrections identified during review.
+4.  Accept the generated files. Make any corrections identified during review.
 
 ### Exercise 1.2 – Test the Fixture Generator
 
@@ -235,7 +254,7 @@ You should see at least one test fail due to the change you made (e.g., expected
 
 #### Step 3 - Debug with Copilot in a multi-turn conversation
 
-Open a Chat session and walk through the debugging process with Copilot. Use prompts like:
+Open a **new** chat session and walk through the debugging process with Copilot. Use prompts like:
 
 1.  `"I'm getting a test failure in backend/tests/books.test.js. Here's the error: [paste the error output]. Help me find the root cause."`
 2.  Let Copilot inspect the route file and the test file.
@@ -262,7 +281,41 @@ Copilot generates a `SKILL.md` (and possibly companion files) that captures the 
 
 Accept or discard the skill.
 
-> **Why this matters:** Extracting skills from conversations turns tribal knowledge into shared, repeatable workflows. A new team member can invoke `/debugging-backend-tests` instead of rediscovering the procedure from scratch.
+#### Step 6 - Put the extracted skill to work
+
+Once accepted, your extracted `debugging-backend-tests` skill can be used in three ways:
+
+**Option A – Invoke it directly as a slash command**
+
+Type `/debugging-backend-tests` in any Chat session to trigger the procedure on demand:
+
+```
+/debugging-backend-tests I'm seeing a test failure in backend/tests/favorites.test.js. Here's the error: [paste output]. Walk me through the debugging procedure.
+```
+
+Copilot loads the skill and follows the exact steps you captured: read the error, inspect the route handler, compare with the test expectation, fix the mismatch, re-run tests.
+
+**Option B – Derive a playbook from it**
+
+Ask Copilot to turn the skill into a broader team playbook that covers multiple failure types:
+
+```
+/create-skill Using /debugging-backend-tests as a starting point, create a new skill called backend-incident-playbook that extends it with sections for: authentication failures (401/403), database connection errors, and CORS issues. Keep the same workflow structure but add a triage table at the top to route to the right section based on error type.
+```
+
+This composes your extracted knowledge into a richer, structured runbook that the whole team can invoke.
+
+**Option C – Append a new issue pattern to the skill**
+
+When you encounter a new class of bug, add it to the skill rather than starting a new conversation from scratch:
+
+```
+I just fixed a bug where a route was missing await on an async database call, causing it to return a Promise instead of the resolved value. Append a new section to /debugging-backend-tests that captures this async/await mismatch pattern: symptom (response is [object Promise]), how to spot it in the route handler, and how to fix it.
+```
+
+Over time, the skill grows into a living reference that captures every debugging pattern your team encounters.
+
+> **Why this matters:** Extracting skills from conversations turns tribal knowledge into shared, repeatable workflows. A new team member can invoke `/debugging-backend-tests` instead of rediscovering the procedure from scratch — and the skill evolves as the team encounters new issues.
 
 ---
 
