@@ -48,7 +48,7 @@ Instead of typing "always use single quotes and semicolons" in every chat, you w
 ### Custom Instructions vs Custom Agents vs Agent Skills
 
 |   | Custom Instructions | Custom Agents | Agent Skills |
-| --- | --- | --- |
+| --- | --- | --- | --- |
 | **Purpose** | Define coding standards and guidelines | Configure AI personas with tool restrictions | Teach specialized capabilities and workflows |
 | **Format** | `.instructions.md` or `copilot-instructions.md` | `.agent.md` | `SKILL.md` |
 | **Scope** | Always-on or file-pattern based | Switched manually or via handoffs | Task-specific, loaded on-demand |
@@ -65,7 +65,7 @@ Instead of typing "always use single quotes and semicolons" in every chat, you w
 | 3 | [Organize and Verify Instructions](#part-3---organize-and-verify-instructions-5-min) | Use `/instructions` to verify loaded files; troubleshoot with Diagnostics; understand instruction priority |
 
 
-#### Install and Start the App
+## Install and Start the App
 
 **Install dependencies** (from the project root):
 

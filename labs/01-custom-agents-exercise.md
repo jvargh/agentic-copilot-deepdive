@@ -358,7 +358,7 @@ You review code changes and provide feedback.
 > All three issues surface as confusing 404s or message mismatches that look like routing bugs but are actually configuration / fixture / state issues. The Reviewer agent's `Test data flow` review focus item is intended to catch these before you run `npm run test`.
 
 | # | Symptom | Root cause | Fix |
-| --- | --- | --- |
+| --- | --- | --- | --- |
 | 1 | All endpoints on the new route return `404` in tests, even though the route file looks correct | The test file's `createApiRouter({ ... })` call is missing a dep key (commonly `reviewsFile`) that `backend/server.js` passes. The router factory silently misconfigures and the route doesn't mount. | Make the test wiring mirror [backend/server.js](../backend/server.js) exactly: `usersFile, booksFile, reviewsFile, readJSON, writeJSON, authenticateToken, SECRET_KEY`. |
 | 2 | Tests for a new fixture user (e.g. `testuser`) all fail with `404 User not found` | The user was added only to `backend/data/test-users.json`. [backend/tests/copy-test-data.sh](../backend/tests/copy-test-data.sh) overwrites `test-users.json` from `backend/data/users.json` before every test run, wiping the new user. | Add the fixture user to `**backend/data/users.json**` (the source). The copy script will propagate it to `test-users.json`. |
 | 3 | One test in a sequence fails with the wrong message (e.g. "removed" instead of "not in list"), even though earlier tests passed | Tests in the same file share state through the JSON-backed user store. An earlier test added `bookId: '1'`, so a later "non-existent book" test using the same id sees stale data. | Use a `bookId` that no other test in the file touches, **or** add a `beforeEach` that restores fixtures from `backend/data/users.json` and `backend/data/books.json`. |
@@ -1008,7 +1008,7 @@ Produce two deliverables:
 ### 1. API Improvement Report
 
 | Current | Issue | Recommendation | Priority |
-| --- | --- | --- |
+| --- | --- | --- | --- |
 | `GET /api/books` | No pagination | Add `?page=&limit=` with total count | High |
 
 ### 2. OpenAPI 3.0 Specification
