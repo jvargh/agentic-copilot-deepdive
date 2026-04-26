@@ -1,11 +1,8 @@
 # Lab 02: Agent Hooks in VS Code - Automate Workflows with Lifecycle Events
 
-> \[!NOTE\]  
-> This lab uses the **Agent Hooks** feature (Preview) in VS Code to execute custom shell commands at key lifecycle points during agent sessions. 
-> 
-> **Prerequisite:** Complete the [Custom Agents lab](custom-agents-exercise.md) first. This lab builds on the agents you created there (Planner, Implementer, Reviewer, Feature Builder, and the FB worker agents).
-
-
+> **Mode:** VS Code (Agent Mode)  
+> **Duration:** ~30 min  
+> **Prerequisite:** [Lab 01 - Custom Agents](01-custom-agents-exercise.md) — you should have Planner, Implementer, Reviewer, and Feature Builder agents in place
 
 ## Table of Contents
 
@@ -39,14 +36,11 @@ In this lab, you will create both global hooks (that apply to all agents) and ag
 
 ### What You Will Learn
 
-**Total Time: ~30 minutes**
-
-| Part | Topic | Description | Time&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |
-| --- | --- | --- | --- |
-| Pre | [Prerequisites](#prerequisites) | VS Code, Copilot subscription, Node.js v18+, repo cloned, app running, Custom Agents lab completed | - |
-| 1 | [Global Hooks: Format and Security](#part-1---global-hooks-format-and-security-15-min) | Create `PostToolUse` auto-format and `PreToolUse` security guard hooks that apply to all agents | 15 min |
-| 2 | [Agent-Scoped Hooks](#part-2---agent-scoped-hooks-15-min) | Use `/create-hook` to generate hooks scoped to specific agents via the `hooks` frontmatter property | 15 min |
-| | | **Total** | **30&nbsp;min** |
+| Part | Topic | Description |
+| --- | --- | --- |
+| Pre | [Prerequisites](#prerequisites) | VS Code, Copilot subscription, Node.js v18+, repo cloned, app running, Custom Agents lab completed |
+| 1 | [Global Hooks: Format and Security](#part-1---global-hooks-format-and-security-15-min) | Create `PostToolUse` auto-format and `PreToolUse` security guard hooks that apply to all agents |
+| 2 | [Agent-Scoped Hooks](#part-2---agent-scoped-hooks-15-min) | Use `/create-hook` to generate hooks scoped to specific agents via the `hooks` frontmatter property |
 
 ### Prerequisites
 

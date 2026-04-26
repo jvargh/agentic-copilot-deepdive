@@ -1,9 +1,7 @@
 # Lab 00: Custom Instructions in VS Code - Define Coding Standards for AI
 
-> \[!NOTE\]  
-> This lab uses the **Custom Instructions** feature in VS Code to define coding standards, conventions, and guidelines that GitHub Copilot follows automatically. You will configure instructions for the **Book Favorites** app.
-> 
-> **This lab is a prerequisite for the** [**Custom Agents lab**](01-custom-agents-exercise.md)**.** Custom instructions define _what rules to follow_; custom agents define _who follows them_ and _with which tools_. Understanding instructions first makes agent design much clearer.
+> **Mode:** VS Code (Agent Mode)  
+> **Duration:** ~30 min  
 
 ## Table of Contents
 
@@ -50,7 +48,7 @@ Instead of typing "always use single quotes and semicolons" in every chat, you w
 ### Custom Instructions vs Custom Agents vs Agent Skills
 
 |   | Custom Instructions | Custom Agents | Agent Skills |
-| --- | --- | --- | --- |
+| --- | --- | --- |
 | **Purpose** | Define coding standards and guidelines | Configure AI personas with tool restrictions | Teach specialized capabilities and workflows |
 | **Format** | `.instructions.md` or `copilot-instructions.md` | `.agent.md` | `SKILL.md` |
 | **Scope** | Always-on or file-pattern based | Switched manually or via handoffs | Task-specific, loaded on-demand |
@@ -59,14 +57,11 @@ Instead of typing "always use single quotes and semicolons" in every chat, you w
 
 ### What You Will Learn
 
-**Total Time: ~45 minutes**
-
-| Part | Topic | Description | Time |
-| --- | --- | --- | --- |
-| Pre | [Prerequisites](#prerequisites) | VS Code, Copilot subscription, repo cloned, Context7 MCP configured, app running | 10 min |
-| 1 | [Always-On Instructions with `copilot-instructions.md`](#part-1---always-on-instructions-with-copilot-instructionsmd-10-min) | Understand always-on vs file-based instructions; enhance `copilot-instructions.md` with project conventions | 10 min |
-| 2 | [File-Based Instructions with `/create-instruction`](#part-2---file-based-instructions-with-create-instruction-20-min) | Generate targeted `.instructions.md` files with `applyTo` glob patterns; extract instructions from conversations | 20 min |
-| 3 | [Organize and Verify Instructions](#part-3---organize-and-verify-instructions-5-min) | Use `/instructions` to verify loaded files; troubleshoot with Diagnostics; understand instruction priority | 5 min |
+| Part | Topic | Description |
+| --- | --- | --- |`r`n| Pre | [Prerequisites](#prerequisites) | VS Code, Copilot subscription, repo cloned, Context7 MCP configured, app running |
+| 1 | [Always-On Instructions with `copilot-instructions.md`](#part-1---always-on-instructions-with-copilot-instructionsmd-10-min) | Understand always-on vs file-based instructions; enhance `copilot-instructions.md` with project conventions |
+| 2 | [File-Based Instructions with `/create-instruction`](#part-2---file-based-instructions-with-create-instruction-20-min) | Generate targeted `.instructions.md` files with `applyTo` glob patterns; extract instructions from conversations |
+| 3 | [Organize and Verify Instructions](#part-3---organize-and-verify-instructions-5-min) | Use `/instructions` to verify loaded files; troubleshoot with Diagnostics; understand instruction priority |
 |   |   | **Total** | **45 min** |
 
 ### Prerequisites (10 min)

@@ -1,9 +1,8 @@
 # Lab 01: Custom Agents in VS Code - Build Specialized AI Personas
 
-> \[NOTE\]   
-> This lab uses the **Custom Agents** feature in VS Code to create specialized AI personas tailored to specific development tasks. You will build agents for the **Book Favorites** app.
-
-## Table of Contents
+> **Mode:** VS Code (Agent Mode)  
+> **Duration:** ~30 min  
+> **Prerequisite:** [Lab 00 - Custom Instructions](00-custom-instructions-exercise.md)
 
 *   [Overview](#overview)
     *   [What You Will Learn](#what-you-will-learn)
@@ -53,18 +52,15 @@
 
 ### What You Will Learn
 
-**Total Time: ~65 minutes**
-
-| Part | Topic | Description | Time |
-| --- | --- | --- | --- |
-| 1 | [Your First Custom Agent: The Planner](#part-1---your-first-custom-agent-the-planner-10-min) | Create a read-only planning agent using the `.agent.md` format with tool restrictions | 10 min |
-| 2 | [An Implementation Agent with Handoffs](#part-2---an-implementation-agent-with-handoffs-15-min) | Build Implementer and Reviewer agents; connect all three with one-click handoffs | 15 min |
-| 3 | [Generate an Agent with AI](#part-3---generate-an-agent-with-ai-10-min) | Use `/create-agent` to generate a Database Migrator agent from a natural language description | 10 min |
-| 4 | [Orchestration Patterns with Subagents](#part-4---orchestration-patterns-with-subagents-25-min) | Learn coordinator-worker and multi-perspective subagent orchestration patterns | 25 min |
-| 4A | [Coordinator and Worker Pattern](#part-4a---coordinator-and-worker-pattern-15-min) | Build a Feature Builder coordinator that delegates to specialized worker subagents | 15 min |
-| 4B | [Multi-perspective Code Review](#part-4b---multi-perspective-code-review-10-min) | Run parallel review subagents (correctness, quality, security, architecture) and synthesize findings | 10 min |
-| 5 | [Visibility and Organization](#part-5---visibility-and-organization-5-min) | View, hide, and debug custom agents using the Agents dropdown and diagnostics tools | 5 min |
-|   |   | **Total Lab Time** | **65 min** |
+| Part | Topic | Description |
+| --- | --- | --- |
+| 1 | [Your First Custom Agent: The Planner](#part-1---your-first-custom-agent-the-planner-10-min) | Create a read-only planning agent using the `.agent.md` format with tool restrictions |
+| 2 | [An Implementation Agent with Handoffs](#part-2---an-implementation-agent-with-handoffs-15-min) | Build Implementer and Reviewer agents; connect all three with one-click handoffs |
+| 3 | [Generate an Agent with AI](#part-3---generate-an-agent-with-ai-10-min) | Use `/create-agent` to generate a Database Migrator agent from a natural language description |
+| 4 | [Orchestration Patterns with Subagents](#part-4---orchestration-patterns-with-subagents-25-min) | Learn coordinator-worker and multi-perspective subagent orchestration patterns |
+| 4A | [Coordinator and Worker Pattern](#part-4a---coordinator-and-worker-pattern-15-min) | Build a Feature Builder coordinator that delegates to specialized worker subagents |
+| 4B | [Multi-perspective Code Review](#part-4b---multi-perspective-code-review-10-min) | Run parallel review subagents (correctness, quality, security, architecture) and synthesize findings |
+| 5 | [Visibility and Organization](#part-5---visibility-and-organization-5-min) | View, hide, and debug custom agents using the Agents dropdown and diagnostics tools |
 
 ### Prerequisites
 
@@ -362,7 +358,7 @@ You review code changes and provide feedback.
 > All three issues surface as confusing 404s or message mismatches that look like routing bugs but are actually configuration / fixture / state issues. The Reviewer agent's `Test data flow` review focus item is intended to catch these before you run `npm run test`.
 
 | # | Symptom | Root cause | Fix |
-| --- | --- | --- | --- |
+| --- | --- | --- |
 | 1 | All endpoints on the new route return `404` in tests, even though the route file looks correct | The test file's `createApiRouter({ ... })` call is missing a dep key (commonly `reviewsFile`) that `backend/server.js` passes. The router factory silently misconfigures and the route doesn't mount. | Make the test wiring mirror [backend/server.js](../backend/server.js) exactly: `usersFile, booksFile, reviewsFile, readJSON, writeJSON, authenticateToken, SECRET_KEY`. |
 | 2 | Tests for a new fixture user (e.g. `testuser`) all fail with `404 User not found` | The user was added only to `backend/data/test-users.json`. [backend/tests/copy-test-data.sh](../backend/tests/copy-test-data.sh) overwrites `test-users.json` from `backend/data/users.json` before every test run, wiping the new user. | Add the fixture user to `**backend/data/users.json**` (the source). The copy script will propagate it to `test-users.json`. |
 | 3 | One test in a sequence fails with the wrong message (e.g. "removed" instead of "not in list"), even though earlier tests passed | Tests in the same file share state through the JSON-backed user store. An earlier test added `bookId: '1'`, so a later "non-existent book" test using the same id sees stale data. | Use a `bookId` that no other test in the file touches, **or** add a `beforeEach` that restores fixtures from `backend/data/users.json` and `backend/data/books.json`. |
@@ -1012,7 +1008,7 @@ Produce two deliverables:
 ### 1. API Improvement Report
 
 | Current | Issue | Recommendation | Priority |
-| --- | --- | --- | --- |
+| --- | --- | --- |
 | `GET /api/books` | No pagination | Add `?page=&limit=` with total count | High |
 
 ### 2. OpenAPI 3.0 Specification

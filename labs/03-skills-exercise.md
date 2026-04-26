@@ -1,9 +1,8 @@
 # Lab 03: Agent Skills in VS Code - Build Reusable AI Capabilities
 
-> \[!NOTE\]  
-> This lab uses the **Agent Skills** feature in VS Code to create portable, reusable capabilities that GitHub Copilot loads on demand.
->
-> **Prerequisite:** Complete the [Custom Agents lab](custom-agents-exercise.md) first. This lab adds a skill that works alongside the agents you created there.
+> **Mode:** VS Code (Agent Mode)  
+> **Duration:** ~30 min  
+> **Prerequisite:** [Lab 01 - Custom Agents](01-custom-agents-exercise.md) — you should have Planner, Implementer, Reviewer, and Feature Builder agents in place
 
 ## Table of Contents
 
@@ -40,18 +39,15 @@ Agent Skills are folders of instructions, scripts, and resources that Copilot ca
 
 ### What You Will Learn
 
-**Total Time: ~60 minutes**
-
-| Part | Exercise | Topic                                                                                                               | Description                                                                          | Time       |
-| ---- | -------- | ------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ | ---------- |
-| Pre  |          | [Prerequisites](#prerequisites)                                                                                     | VS Code, Copilot subscription, repo cloned, app running, Custom Agents lab completed | \-         |
-| 1    | 1.1      | [Generate the Test Fixture Skill](#exercise-11--generate-the-test-fixture-generator-skill)                          | Use `/create-skill` to generate SKILL.md, templates, and fixture script              | 10 min     |
+| Part | Exercise | Topic                                                                                                               | Description                                                                          |
+| ---- | -------- | ------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| Pre  |          | [Prerequisites](#prerequisites)                                                                                     | VS Code, Copilot subscription, repo cloned, app running, Custom Agents lab completed |
+| 1    | 1.1      | [Generate the Test Fixture Skill](#exercise-11--generate-the-test-fixture-generator-skill)                          | Use `/create-skill` to generate SKILL.md, templates, and fixture script              |
 |      | 1.2      | [Test the Fixture Generator](#exercise-12--test-the-fixture-generator)                                              | Trigger the skill, generate tests for books API, verify they pass                    | 8 min      |
 |      | 1.3      | [Generate Fixtures for a Different Resource](#exercise-13--generate-fixtures-for-a-different-resource)              | Generate fixtures for favorites API and edge-case book data                          | 7 min      |
 |      | 1.4      | [Understand Frontmatter Controls](#exercise-14--understand-frontmatter-controls)                                    | Experiment with `user-invocable` and `disable-model-invocation`                      | 5 min      |
-| 2    | 2.1      | [Extract a Skill from a Debugging Conversation](#exercise-21--extract-a-skill-from-a-debugging-conversation-15-min) | Introduce a bug, debug with Copilot, extract the procedure as a reusable skill       | 15 min     |
-|      | 2.2      | [Install Community Skills from awesome-copilot](#exercise-22--install-community-skills-from-awesome-copilot-15-min) | Install review-and-refactor, conventional-commit, and jest skills; test composition  | 15 min     |
-|      |          |                                                                                                                     | **Total**                                                                            | **60 min** |
+| 2    | 2.1      | [Extract a Skill from a Debugging Conversation](#exercise-21--extract-a-skill-from-a-debugging-conversation-15-min) | Introduce a bug, debug with Copilot, extract the procedure as a reusable skill       |
+|      | 2.2      | [Install Community Skills from awesome-copilot](#exercise-22--install-community-skills-from-awesome-copilot-15-min) | Install review-and-refactor, conventional-commit, and jest skills; test composition  |
 
 ### Prerequisites
 
