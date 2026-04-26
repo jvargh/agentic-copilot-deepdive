@@ -339,7 +339,7 @@ Create or update `.vscode/mcp.json` in the **workspace root**:
     "book-database": {
       "type": "stdio",
       "command": "node",
-      "args": ["book-database-mcp-server/dist/index.js"]
+      "args": ["/book-database-mcp-server/dist/index.js"]
     }
   }
 }
