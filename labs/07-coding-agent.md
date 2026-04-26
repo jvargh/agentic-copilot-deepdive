@@ -1,7 +1,6 @@
 # Lab 07 - Coding Agent: Autonomous PR Workflow
 
 > **Mode:** GitHub.com  
-> **Duration:** 50 min  
 > **Prerequisite:** [Lab 00](00-prerequisites.md)
 
 ---

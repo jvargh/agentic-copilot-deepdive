@@ -1,8 +1,7 @@
 # Lab 03: Agent Skills in VS Code - Build Reusable AI Capabilities
 
 > **Mode:** VS Code (Agent Mode)  
-> **Duration:** ~30 min  
-> **Prerequisite:** [Lab 01 - Custom Agents](01-custom-agents-exercise.md) — you should have Planner, Implementer, Reviewer, and Feature Builder agents in place
+> **Prerequisite:** [Lab 01 - Custom Agents](01-custom-agents-exercise.md)
 
 ## Table of Contents
 
@@ -123,8 +122,8 @@ This means you can install many skills without bloating context - only what is r
 | What to check                  | What to look for                                                                  | If missing or wrong                          |
 | ------------------------------ | --------------------------------------------------------------------------------- | -------------------------------------------- |
 | **Location**                   | Files in `.github/skills/generating-test-fixtures/`                               | Move the generated files to the correct path |
-| **SKILL.md** `**name**`        | `generating-test-fixtures` (must match directory name)                            | Fix to match                                 |
-| **SKILL.md** `**description**` | Third person, mentions Jest, supertest, `testing.instructions.md`                 | Add specifics                                |
+| **SKILL.md** `name`        | `generating-test-fixtures` (must match directory name)                            | Fix to match                                 |
+| **SKILL.md** `description` | Third person, mentions Jest, supertest, `testing.instructions.md`                 | Add specifics                                |
 | **SKILL.md body**              | References `./templates.md` and `./scripts/generate-fixtures.js` (one level deep) | Add relative path links                      |
 | **SKILL.md body**              | Under 200 lines, no performance/snapshot/CI sections                              | Remove extra sections                        |
 | **SKILL.md body**              | Workflow with a copyable checklist                                                | Add if missing                               |

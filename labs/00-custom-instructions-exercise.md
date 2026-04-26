@@ -1,7 +1,6 @@
 # Lab 00: Custom Instructions in VS Code - Define Coding Standards for AI
 
 > **Mode:** VS Code (Agent Mode)  
-> **Duration:** ~30 min  
 
 ## Table of Contents
 
@@ -245,7 +244,7 @@ File-based instructions use `.instructions.md` files stored in `.github/instruct
 
 > **Result:** Copilot calls Context7 to resolve and fetch docs for `react` and `@reduxjs/toolkit`, then uses those docs alongside your conventions to generate an instruction file with up-to-date patterns.
 
-1.  Copilot generates a `.instructions.md` file and opens it for review. **Do not accept it yet** but validate it against the checklist below.
+4.  Copilot generates a `.instructions.md` file and opens it for review. **Do not accept it yet** but validate it against the checklist below.
 
 **Review checklist:**
 
@@ -323,7 +322,7 @@ const token = useSelector(state => state.user.token);
 "Use Context7 to fetch the latest Express.js documentation first. Then create a concise instruction file (under 40 lines in the body) and save it as `.github/instructions/express.instructions.md`. In the YAML frontmatter, include `name: 'Express API Standards'`, a one-line `description`, and `applyTo: '**/*.js'` as a plain string - not an array. Conventions to enforce: each resource gets its own route file in `backend/routes/` (e.g., `books.js`, `favorites.js`), route files export a factory function that receives a `deps` object for dependency injection, register new routers in `backend/routes/index.js` via `router.use()`, use plural nouns for resource paths like `/books` and `/reading-lists`, use `authenticateToken` middleware for protected endpoints, return appropriate HTTP status codes (200, 201, 400, 401, 404, 500), use consistent error format `{ error: 'message' }`, never expose stack traces, JSON data files live in `backend/data/`, write with `JSON.stringify(data, null, 2)`. Do not add testing, deployment, or logging sections - keep it focused on route and API conventions only."
 ```
 
-1.  Review the generated file against this checklist:
+4.  Review the generated file against this checklist:
 
 | Field | What to look for | If missing |
 | --- | --- | --- |
@@ -334,7 +333,7 @@ const token = useSelector(state => state.user.token);
 | Body | Mentions error response format `{ error: '...' }` | Add the rule |
 | Length | Under ~40 lines - no testing, deployment, or logging sections | Remove extra sections |
 
-1.  Accept the file.
+5.  Accept the file.
 
 **Expected output reference:**
 
@@ -383,7 +382,7 @@ applyTo: '**/*.js'
 
 > "Use Context7 to fetch the latest Jest and Cypress documentation first. Then create a concise instruction file (under 30 lines in the body) and save it as `.github/instructions/testing.instructions.md`. In the YAML frontmatter, include `name: 'Testing Standards'`, a one-line `description`, and `applyTo: '**/*.{test,spec,cy}.{js,jsx}'` as a plain string - not an array. Conventions to enforce: backend Jest tests go in `backend/tests/` with `.test.js` extension using supertest for HTTP testing, run with `npm run test:backend`, structure as describe block per route and it block per scenario, always test both success and error cases (400, 401, 404). Frontend Cypress E2E tests go in `frontend/cypress/e2e/` with `.cy.js` extension, run with `npm run build:frontend && npm run test:frontend`, use `cy.get('[data-testid="..."]')` for element selection. Always start test descriptions with 'should'. Do not add CI/CD, coverage, or snapshot testing sections."
 
-1.  Review and accept the file.
+4.  Review and accept the file.
 
 **Expected output reference:**
 
@@ -427,7 +426,7 @@ applyTo: '**/*.{test,spec,cy}.{js,jsx}'
 
 > "Use Context7 to fetch the latest CSS Modules documentation first. Then create a concise instruction file (under 30 lines in the body) and save it as `.github/instructions/css.instructions.md`. In the YAML frontmatter, include `name: 'CSS Module Standards'`, a one-line `description`, and `applyTo: '**/*.module.css'` as a plain string - not an array. Conventions to enforce: use kebab-case for all class names (e.g., `.book-card`, `.nav-header`), never use `!important`, use CSS custom properties (variables) defined in `App.module.css` for colors and spacing, mobile-first responsive design with `min-width` media queries, and keep selectors flat - maximum 2 levels of nesting. Include one short good/bad CSS example. Do not add animation, theming, or preprocessor sections."
 
-1.  Review the generated file against this checklist:
+4.  Review the generated file against this checklist:
 
 | Field | What to look for | If missing |
 | --- | --- | --- |
@@ -438,7 +437,7 @@ applyTo: '**/*.{test,spec,cy}.{js,jsx}'
 | Body | Mentions CSS custom properties | Add the rule |
 | Length | Under ~30 lines - no animation, theming, or preprocessor sections | Remove extra sections |
 
-1.  Accept the file.
+5.  Accept the file.
 
 **Expected output reference:**
 
@@ -496,7 +495,7 @@ applyTo: '**/*.module.css'
 | `Testing Standards` | `.github/instructions/testing.instructions.md` | Working on `*.test.js`, `*.cy.js` |
 | `CSS Module Standards` | `.github/instructions/css.instructions.md` | Working on `**/*.module.css` |
 
-1.  Verify each file appears with its name from the `name` frontmatter field.
+3.  Verify each file appears with its name from the `name` frontmatter field.
 
 ### **Exercise 2.6 - Test Pattern-Based Activation**
 
@@ -509,8 +508,8 @@ Test that the right instructions activate based on the file you are working on:
 
 > "Refactor the BookList component to extract the reading list dropdown into a separate component called ReadingListDropdown."
 
-1.  Check the **References** section - you should see `react.instructions.md` listed. If not ask copilot if it did pick it up by running prompt `what were the references used in the BookList.jsx implementation?`
-2.  Verify the generated code uses `useAppSelector`/`useAppDispatch` (not raw Redux hooks), CSS Modules, and functional component patterns.
+3.  Check the **References** section - you should see `react.instructions.md` listed. If not ask copilot if it did pick it up by running prompt `what were the references used in the BookList.jsx implementation?`
+4.  Verify the generated code uses `useAppSelector`/`useAppDispatch` (not raw Redux hooks), CSS Modules, and functional component patterns.
 
 **Test 2 - Express instructions:**
 
@@ -519,8 +518,8 @@ Test that the right instructions activate based on the file you are working on:
 
 > "Add a GET endpoint to search books by title with a query parameter."
 
-1.  Check **References** - you should see `express.instructions.md` listed. If not ask copilot if it did pick it up by running prompt `what were the references used in the books.js implementation?`
-2.  Verify the generated code follows the factory function pattern, uses `req.query`, and returns proper status codes.
+3.  Check **References** - you should see `express.instructions.md` listed. If not ask copilot if it did pick it up by running prompt `what were the references used in the books.js implementation?`
+4.  Verify the generated code follows the factory function pattern, uses `req.query`, and returns proper status codes.
 
 > **Tip:** If an instruction file does not appear in References, check that the `applyTo` glob pattern matches the file path relative to the workspace root. Use `/instructions` to confirm the file is registered.
 
@@ -536,7 +535,7 @@ You can also extract instructions from an ongoing chat. This is useful when you 
 
 > "No - this project uses a factory function pattern: `module.exports = function createReviewsRouter(deps) { ... }` that receives a `deps` object. Fix the code."
 
-1.  After Copilot corrects itself, extract the convention as a permanent instruction:
+3.  After Copilot corrects itself, extract the convention as a permanent instruction:
 
 > "Extract an instruction from this conversation about the Express route factory pattern."
 
@@ -644,7 +643,7 @@ You should see the default locations:
 }
 ```
 
-1.  Create a test instruction file to verify it works. In the Chat view, click the **gear icon** (⚙️) at the top, then select **Add Instructions...**. Choose the `.github/instructions/docs/conventions` folder as the location and name the file `naming`. Add the following content:
+2.  Create a test instruction file to verify it works. In the Chat view, click the **gear icon** (⚙️) at the top, then select **Add Instructions...**. Choose the `.github/instructions/docs/conventions` folder as the location and name the file `naming`. Add the following content:
 
 ```
 ---
@@ -818,7 +817,7 @@ Create an instruction file that governs how Copilot writes documentation:
 
 > "Create a concise instruction file (under 20 lines in the body) and save it as `.github/instructions/docs.instructions.md`. In the YAML frontmatter, include `name: 'Documentation Standards'`, a one-line `description`, and `applyTo: '**/*.md'` as a plain string - not an array. Conventions to enforce: use sentence-case for headings (e.g., 'Getting started' not 'Getting Started'), include a 'Prerequisites' section for any how-to or setup guide, use fenced code blocks with a language identifier (e.g., `javascript,` bash), always specify the shell for terminal commands (e.g., \`\`\`bash), maximum line length of 120 characters for readability, start with a brief one-line summary of what the document covers, use numbered lists for sequential steps and bullet lists for unordered items. Do not add template, changelog, or versioning sections."
 
-1.  Review the generated file against this checklist:
+4.  Review the generated file against this checklist:
 
 | Field | What to look for | If missing |
 | --- | --- | --- |
@@ -830,7 +829,7 @@ Create an instruction file that governs how Copilot writes documentation:
 | Body | Mentions 120-character line length | Add the rule |
 | Length | Under ~20 lines - no template, changelog, or versioning sections | Remove extra sections |
 
-1.  Accept the file.
+5.  Accept the file.
 
 **Expected output reference:**
 

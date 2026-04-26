@@ -1,13 +1,11 @@
 # Lab 01: Custom Agents in VS Code - Build Specialized AI Personas
 
 > **Mode:** VS Code (Agent Mode)  
-> **Duration:** ~30 min  
 > **Prerequisite:** [Lab 00 - Custom Instructions](00-custom-instructions-exercise.md)
 
 *   [Overview](#overview)
     *   [What You Will Learn](#what-you-will-learn)
     *   [Prerequisites](#prerequisites)
-    *   [Time Estimate](#time-estimate)
     *   [Success Tips](#success-tips)
 *   [What You Will Build](#what-you-will-build)
 *   [Part 1 - Your First Custom Agent: The Planner](#part-1---your-first-custom-agent-the-planner-10-min)
@@ -70,10 +68,6 @@
 | **GitHub Copilot** | Copilot Pro, Pro+, Business, or Enterprise subscription |
 | **Workspace** | This repository cloned locally |
 | **App running** | `npm run install:all && npm start` - backend on :4000, frontend on :5173 |
-
-### Time Estimate
-
-45 - 60 minutes
 
 ### Success Tips
 

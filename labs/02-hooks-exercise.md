@@ -1,7 +1,6 @@
 # Lab 02: Agent Hooks in VS Code - Automate Workflows with Lifecycle Events
 
 > **Mode:** VS Code (Agent Mode)  
-> **Duration:** ~30 min  
 > **Prerequisite:** [Lab 01 - Custom Agents](01-custom-agents-exercise.md)
 
 ## Table of Contents

@@ -1,7 +1,6 @@
 # Lab 05 - Exercise the Book Database MCP Server
 
 > **Mode:** VS Code (Agent Mode)  
-> **Duration:** 30 min  
 > **Prerequisite:** [Lab 04 - Build an MCP Server](04-mcp-builder.md) (MCP server built and wired into VS Code)
 
 ---

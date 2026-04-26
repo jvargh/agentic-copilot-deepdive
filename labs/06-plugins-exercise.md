@@ -1,8 +1,7 @@
 # Lab 06: Agent Plugins in VS Code - Bundle and Share AI Customizations
 
 > **Mode:** VS Code (Agent Mode)  
-> **Duration:** ~50 min  
-> **Prerequisite:** [Lab 04 - Build an MCP Server](04-mcp-builder.md) and [Lab 05 - Exercise the MCP Server](05-mcp-data.md) (Labs 00-05 completed, app running)
+> **Prerequisite:** [Lab 04 - Build an MCP Server](04-mcp-builder.md) and [Lab 05 - Exercise the MCP Server](05-mcp-data.md) 
 
 ## Table of Contents
 

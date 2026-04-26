@@ -1,7 +1,6 @@
 # Lab 04 - Build an MCP Server with the MCP Builder Skill
 
 > **Mode:** VS Code (Agent Mode)  
-> **Duration:** 30 min  
 > **Prerequisite:** [Lab 03 - Agent Skills](03-skills-exercise.md)
 
 ---
