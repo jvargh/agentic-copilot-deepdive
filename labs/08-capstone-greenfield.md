@@ -6,6 +6,17 @@
 
 ---
 
+## Table of Contents
+
+*   [The Scenario](#the-scenario)
+*   [Part 1 - Bootstrap the Project with Conventions](#part-1---bootstrap-the-project-with-conventions-10-min)
+*   [Part 2 - Build a Flag Schema MCP Server](#part-2---build-a-flag-schema-mcp-server-10-min)
+*   [Part 3 - Create Agents, Hooks, and Skills](#part-3---create-agents-hooks-and-skills-15-min)
+*   [Part 4 - The Sprint: Plan, Implement, Review](#part-4---the-sprint-plan-implement-review-20-min)
+*   [Part 5 - Validate and Ship](#part-5---validate-and-ship-5-min)
+
+---
+
 ## The Scenario
 
 Your engineering director walks into standup:
@@ -18,6 +29,8 @@ You will build this **from an empty folder** using the full AI-powered developme
 
 ### Architecture
 ![alt text](imgs/CapstoneGreenfieldArchDiag.png)
+This diagram illustrates a complete AI-driven development pipeline for building a production-ready feature flag service from scratch, where predefined conventions establish coding and security standards, an MCP server provides a single source of truth for data schemas, and a reusable scaffolding skill guides the implementation process; these inputs are orchestrated by a Planner agent to generate a structured plan, which is then executed by an Implementer agent under automated guardrails like formatting and safety hooks, followed by a Reviewer agent that enforces security and quality checks in a feedback loop until approval, ultimately resulting in a fully functional system with secure CRUD APIs, feature toggling, audit logging, and consistent validation across all components. 
+
 
 ### What Makes This Production-Grade
 

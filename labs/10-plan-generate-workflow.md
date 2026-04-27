@@ -6,6 +6,20 @@
 
 ---
 
+## Table of Contents
+
+*   [Objective](#objective)
+*   [How It Works](#how-it-works)
+*   [Prerequisites](#prerequisites)
+*   [Part 1 - Create the `/plan` Prompt File](#part-1---create-the-plan-prompt-file-10-min)
+*   [Part 2 - Create the `/generate` Prompt File](#part-2---create-the-generate-prompt-file-10-min)
+*   [Part 3 - Create the Implementation Agent](#part-3---create-the-implementation-agent-10-min)
+*   [Part 4 - Run the Full Pipeline End-to-End](#part-4---run-the-full-pipeline-end-to-end-15-min)
+*   [Part 5 - Reflect and Extend (Optional)](#part-5---reflect-and-extend-optional)
+*   [Validation Checklist](#validation-checklist)
+
+---
+
 ## Objective
 
 Use the `/plan` and `/generate` slash commands to orchestrate a **model-tiered PR workflow**: a large model plans and decomposes work, then a smaller, faster model executes each task. This mirrors how production teams plan with senior engineers and delegate implementation to the broader team.

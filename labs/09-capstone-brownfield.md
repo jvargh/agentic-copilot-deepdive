@@ -6,6 +6,22 @@
 
 ---
 
+## Table of Contents
+
+*   [The Mission](#the-mission)
+*   [Part 1 - Extend the MCP Server with Quote Data](#part-1---extend-the-mcp-server-with-quote-data-10-min)
+*   [Part 2 - Set Up Guardrails](#part-2---set-up-guardrails-10-min)
+*   [Part 3 - Create a Full-Stack Scaffolding Skill](#part-3---create-a-full-stack-scaffolding-skill-10-min)
+*   [Part 4 - Agent-Orchestrated Feature Sprint](#part-4---agent-orchestrated-feature-sprint-25-min)
+*   [Part 5 - Validate the Full Pipeline](#part-5---validate-the-full-pipeline-5-min)
+*   [Bonus Challenges](#bonus-challenges)
+*   [Architecture Summary](#architecture-summary)
+*   [Key Takeaways](#key-takeaways)
+*   [What You Have Built Across All Labs](#what-you-have-built-across-all-labs)
+*   [Reference](#reference)
+
+---
+
 ## The Mission
 
 You are a developer at a startup that runs the **Book Favorites** app. Your product manager just dropped a high-priority feature request:
