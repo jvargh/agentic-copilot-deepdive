@@ -417,7 +417,7 @@ git push
 2. **Create issues from the tasks** using Copilot Chat on **GitHub.com** (or VS Code Agent Mode with the GitHub tools). Submit the following prompt:
 
 ```
-In <your-username>/<your-repo>, read the file implementation.md in the repo root. For each task listed in the file, create a GitHub issue with the task title, instructions, acceptance criteria, and the commit message in the body. Then create a parent issue titled "Implement Reading Status Feature" that links to all the task issues as sub-issues. Assign the parent issue to Copilot.
+Read implementation.md in the repo root. For each task in the file, create a GitHub issue with the task title, instructions, acceptance criteria, and commit message in the body. Then create a parent issue using the title from the implementation.md heading, link all task issues as sub-issues, and assign the parent to Copilot.
 ```
 
 3. Approve the GitHub tool calls as Copilot creates each issue

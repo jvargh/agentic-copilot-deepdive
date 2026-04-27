@@ -5,6 +5,18 @@
 
 ---
 
+## Table of Contents
+
+*   [Objective](#objective)
+*   [How It Works](#how-it-works)
+*   [Pre-requisite: Push Your Code to GitHub](#pre-requisite-push-your-code-to-github)
+*   [Exercise 1: Prompt-to-PR Lifecycle + Iteration - Clear All Favorites](#exercise-1-prompt-to-pr-lifecycle--iteration---clear-all-favorites)
+*   [Exercise 2: Multi-Issue Coordination - Book Reviews](#exercise-2-multi-issue-coordination---book-reviews)
+*   [Exercise 3: Copilot-Assisted Issue Management](#exercise-3-copilot-assisted-issue-management)
+*   [Troubleshooting](#troubleshooting)
+
+---
+
 ## Objective
 
 Use the GitHub Copilot Coding Agent to implement features by assigning GitHub Issues. The agent works asynchronously - it analyzes the repo, generates code, and opens a draft PR.
@@ -76,9 +88,9 @@ Create a .gitignore file with node_modules and other commonly irrelevant files a
 
 ## Exercise 1: Prompt-to-PR Lifecycle + Iteration - Clear All Favorites
 
-> **Purpose:** Walk through the complete Coding Agent pipeline end-to-end. You'll submit a prompt using Agent Mode
-> (Cloud) in VS Code, which directly creates a PR - no issue is created. You'll then monitor the Actions workflow,
-> review the generated PR, and refine the output by commenting on the PR - learning every step of the autonomous
+> **Purpose:** Walk through the complete Coding Agent pipeline end-to-end. You'll submit a prompt using Agent Mode  
+> (Cloud) in VS Code, which directly creates a PR - no issue is created. You'll then monitor the Actions workflow,  
+> review the generated PR, and refine the output by commenting on the PR - learning every step of the autonomous  
 > workflow including the feedback loop.
 
 ### Step 1: Create the PR via Agent Mode (Cloud)
@@ -91,8 +103,8 @@ Create a .gitignore file with node_modules and other commonly irrelevant files a
 Add a "Clear All Favorites" button that lets users remove all books from their favorites list at once, with a confirmation dialog before clearing. Assign the Pull Request and its Review to Copilot.
 ```
 
-3.  When Agent Mode asks for confirmation, approve the GitHub tool calls.
-4.  The agent will directly create a PR (no issue gets created).
+1.  When Agent Mode asks for confirmation, approve the GitHub tool calls.
+2.  The agent will directly create a PR (no issue gets created).
 
 ### Step 2: Monitor the Workflow
 
@@ -198,17 +210,17 @@ Before creating issues, confirm the Coding Agent has access to the GitHub MCP se
 
 Instead of manually filling out issue forms, use **Copilot Chat** on GitHub.com to create all three issues from natural language prompts.
 
-1. Go to [Copilot Chat](https://github.com/copilot) on **GitHub.com**
-2. Submit the following prompt to create the frontend issue:
+1.  Go to [Copilot Chat](https://github.com/copilot) on **GitHub.com**
+2.  Submit the following prompt to create the frontend issue:
 
 ```
 In <your-username>/<your-repo>, create an issue titled "Add Book Reviews UI" with this description: Add a book reviews UI - a "Reviews" section on each book card with a form for submitting new reviews (1-5 star rating and review text), a scrollable list of existing reviews, and the average rating displayed.
 ```
 
-3. Review the draft that Copilot generates - check the title and body
-4. Click **Create** to publish the issue
+1.  Review the draft that Copilot generates - check the title and body
+2.  Click **Create** to publish the issue
 
-> **Your issue number:** #____
+> **Your issue number:** #\_\_\_\_
 
 ### Step 3: Create the Backend Issue via Copilot Chat
 
@@ -220,7 +232,7 @@ In <your-username>/<your-repo>, create an issue titled "Add Book Reviews Backend
 
 Review the draft and click **Create**.
 
-> **Your issue number:** #____
+> **Your issue number:** #\_\_\_\_
 
 ### Step 4: Create the Main Feature Issue and Assign to Copilot
 
@@ -266,11 +278,11 @@ Review the draft and click **Create**.
 ## Exercise 3: Copilot-Assisted Issue Management
 
 > **Purpose:** Learn how to use GitHub Copilot in VS Code Agent Mode to rapidly create, batch-create, decompose, and update issues using natural language. These skills accelerate planning workflows and pair naturally with the Coding Agent - issues you create can be assigned to Copilot for autonomous implementation.
->
+> 
 > **Mode:** All steps in this exercise use **Copilot Chat in VS Code** with **Agent Mode (Local)**. Copilot uses the GitHub tools (via the GitHub Pull Request extension) to create and manage issues directly from your editor.
->
+> 
 > **Pre-requisite:** Install the **GitHub Pull Request and Issues** extension in VS Code if not already installed.
->
+> 
 > **Reference:** [Using GitHub Copilot to create or update issues](https://docs.github.com/en/copilot/how-tos/use-copilot-for-common-tasks/use-copilot-to-create-or-update-issues)
 
 ### Step 1: Create an Issue from a Screenshot
@@ -285,8 +297,8 @@ Copilot Agent Mode accepts images alongside text prompts.
 In <your-username>/<your-repo>, create a GitHub issue because this UI element needs improvement.
 ```
 
-4.  When Copilot asks to confirm the GitHub tool calls, approve them
-5.  Review the issue that Copilot creates - check the title, body, and labels in the confirmation
+1.  When Copilot asks to confirm the GitHub tool calls, approve them
+2.  Review the issue that Copilot creates - check the title, body, and labels in the confirmation
 
 ### Step 2: Create Multiple Issues at Once
 
@@ -301,8 +313,8 @@ In <your-username>/<your-repo>, create 3 GitHub issues:
 3) Add a dark mode toggle to the header
 ```
 
-2.  Approve each GitHub tool call as Copilot creates the issues
-3.  Verify the issues appear in the **Issues** tab on GitHub.com
+1.  Approve each GitHub tool call as Copilot creates the issues
+2.  Verify the issues appear in the **Issues** tab on GitHub.com
 
 ### Step 3: Create an Epic with Sub-Issues
 
@@ -314,12 +326,12 @@ Copilot can decompose a feature into a parent issue and sub-issues.
 In <your-username>/<your-repo>, create a GitHub issue titled "User Profile Feature" as an epic. Then create sub-issues for: profile page layout, edit profile form, profile avatar upload, and user activity feed. Link them as sub-issues of the epic.
 ```
 
-2.  Approve the GitHub tool calls as Copilot creates the parent issue and sub-issues
-3.  You can refine with follow-up prompts:
-    - `Add another sub-issue for profile privacy settings to the epic`
-    - `Update the epic description to include an overview of all sub-issues`
-4.  Verify the issue tree on GitHub.com - the parent issue should list sub-issues
-5.  Assign to Copilot to review and view progress end-to-end.
+1.  Approve the GitHub tool calls as Copilot creates the parent issue and sub-issues
+2.  You can refine with follow-up prompts:
+    *   `Add another sub-issue for profile privacy settings to the epic`
+    *   `Update the epic description to include an overview of all sub-issues`
+3.  Verify the issue tree on GitHub.com - the parent issue should list sub-issues
+4.  Assign to Copilot to review and view progress end-to-end.
 
 ### Step 4: Update an Existing Issue
 
@@ -332,7 +344,7 @@ Copilot can update issues that already exist in your repository.
 In <your-username>/<your-repo>, update GitHub issue #<number> to add acceptance criteria and steps to reproduce. Also add the label "enhancement".
 ```
 
-3.  Approve the tool calls and verify the updated issue on GitHub.com
+1.  Approve the tool calls and verify the updated issue on GitHub.com
 
 ### Step 5: Add Sub-Issues to an Existing Parent
 
@@ -344,7 +356,7 @@ Connect new issues to existing parent issues.
 In <your-username>/<your-repo>, create a sub-issue for GitHub issue #<parent-number> to add unit tests for the feature.
 ```
 
-2.  Approve the tool calls and verify the sub-issue is linked on GitHub.com
+1.  Approve the tool calls and verify the sub-issue is linked on GitHub.com
 
 ### Step 6 (Optional): Assign a Created Issue to Copilot
 
@@ -356,9 +368,9 @@ Any issue you create can be immediately assigned to the Coding Agent.
 In <your-username>/<your-repo>, create a GitHub issue to add an "About" page with project description and contributor list. Assign it to Copilot.
 ```
 
-2.  Approve the tool calls - the Coding Agent picks up the issue and starts working autonomously
-3.  Verify the 👀 reaction appears on the issue on GitHub.com
-4.  Check the **Actions** tab for the triggered workflow
+1.  Approve the tool calls - the Coding Agent picks up the issue and starts working autonomously
+2.  Verify the 👀 reaction appears on the issue on GitHub.com
+3.  Check the **Actions** tab for the triggered workflow
 
 ### Validation
 

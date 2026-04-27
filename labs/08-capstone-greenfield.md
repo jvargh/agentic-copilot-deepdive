@@ -16,6 +16,9 @@ Feature flags are production-critical infrastructure used by every major tech co
 
 You will build this **from an empty folder** using the full AI-powered development pipeline: custom instructions to enforce conventions, an MCP server to provide flag schema data, hooks to guard against mistakes, a skill to define the scaffolding workflow, and a coordinated agent pipeline to plan, implement, and security-review the entire service.
 
+### Architecture
+![alt text](imgs/CapstoneGreenfieldArchDiag.png)
+
 ### What Makes This Production-Grade
 
 | Production Concern     | How This Lab Addresses It                                                                                      |
