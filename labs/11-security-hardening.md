@@ -30,16 +30,6 @@ Run a complete security hardening sprint against the Book Favorites backend usin
 | 4 | Coding Agent fix PRs | Lab 07 (Coding Agent) |
 | 5 | Reviewer re-scan + compliance report | Labs 01, 03 |
 
-### What You Will Learn
-
-| Part | Topic |
-| --- | --- |
-| 1 | [Build the OWASP Scanner Agent](#exercise-1--build-the-owasp-scanner-agent-10-min) |
-| 2 | [Create the Security-Fix Skill](#exercise-2--create-the-security-fix-skill-10-min) |
-| 3 | [Add the Auth-Guard Hook](#exercise-3--add-the-auth-guard-hook-10-min) |
-| 4 | [Run the Scanner and Open Fix PRs](#exercise-4--run-the-scanner-and-open-fix-prs-20-min) |
-| 5 | [Re-Scan and Generate Compliance Report](#exercise-5--re-scan-and-generate-compliance-report-10-min) |
-
 ### Prerequisites
 
 | Requirement | Details |
