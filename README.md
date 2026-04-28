@@ -3,6 +3,65 @@
 > [!NOTE]
 > This is a demo repository to be used during the GitHub Copilot Agents and MCP training session.
 
+## Features
+
+### Application Features
+
+#### Authentication & User Management
+- **User Registration** — create a new account with a username and password via `POST /api/auth/register`
+- **User Login** — authenticate with existing credentials and receive a JWT via `POST /api/auth/login`
+- **User Logout** — clear the session token and return to the welcome page
+- **JWT-based Auth** — tokens are issued on login, stored in `localStorage`, and sent as `Authorization: Bearer` headers on every protected request
+- **Protected Routes** — `/books` and `/favorites` pages redirect unauthenticated users to the welcome page
+
+#### Book Catalog
+- **Browse Books** — view a curated catalog of 50 books via `GET /api/books`
+- **Book Cards** — each book displays its title and author in a responsive card grid
+- **Favorite Indicator** — books already in the user's favorites list display a filled heart (♥) icon
+
+#### Favorites
+- **Add to Favorites** — add a book to a personal favorites list via `POST /api/favorites`
+- **View Favorites** — see all favorited books in a dedicated page via `GET /api/favorites`
+- **Idempotent Add** — adding a book that is already a favorite is a no-op (no duplicates)
+- **Empty State** — clear call-to-action when no favorites have been added yet
+
+#### UI / UX
+- **Responsive Layout** — CSS Modules with a card grid that adapts to desktop and mobile viewports
+- **Navigation Header** — fixed top bar with **Books** and **Favorites** links, a greeting with the logged-in username, and a **Logout** button; links are hidden when the user is not logged in
+- **Loading & Error States** — spinner/message shown while data is being fetched; error message shown on failure
+- **Welcome Page** — landing page with links to **Login** and **Register** for unauthenticated visitors
+
+### Backend API Endpoints
+
+| Method | Endpoint | Auth Required | Description |
+|--------|----------|:-------------:|-------------|
+| `POST` | `/api/auth/register` | No | Register a new user |
+| `POST` | `/api/auth/login` | No | Login and receive a JWT |
+| `GET` | `/api/books` | No | Retrieve the full book catalog |
+| `GET` | `/api/favorites` | Yes | Retrieve the authenticated user's favorites |
+| `POST` | `/api/favorites` | Yes | Add a book to the authenticated user's favorites |
+
+### Workshop / Labs Features
+
+This repository doubles as the hands-on project for the **Agentic DevOps with GitHub Copilot** workshop. The following lab features are included:
+
+| Lab | Feature |
+|-----|---------|
+| **Lab 00 — Custom Instructions** | `.instructions.md` files (stored in `.github/instructions/`) that teach Copilot project-specific coding standards and architecture rules |
+| **Lab 01 — Custom Agents** | Specialist AI personas (Planner, Implementer, Reviewer) with tool restrictions and agent-handoff patterns |
+| **Lab 02 — Agent Hooks** | Shell commands fired at agent lifecycle events (e.g. auto-format on save, security guard before destructive ops) |
+| **Lab 03 — Agent Skills** | Reusable portable capabilities (Test Fixture Generator, Data Seeder) created with `/create-skill` |
+| **Lab 04 — Build an MCP Server** | TypeScript MCP server scaffolded with MCP Builder, Zod-validated tools, and MCP Inspector integration |
+| **Lab 05 — Exercise the MCP Server** | Using the MCP server to generate features from live book data and extend it with new tools |
+| **Lab 06 — Agent Plugins** | Distributable plugin bundles combining instructions, agents, hooks, skills, and MCP servers via `plugin.json` |
+| **Lab 07 — Coding Agent** | GitHub Copilot Coding Agent implementing features from GitHub Issues through the prompt-to-PR lifecycle |
+| **Lab 08 — Greenfield Capstone** | Feature Flag Service built from scratch using agents, skills, hooks, and MCP servers from Labs 00–07 |
+| **Lab 09 — Brownfield Capstone** | Full-stack Book Quotes feature delivered in a production sprint using all prior labs |
+| **Lab 10 — Plan → Generate → Implement** | Model-tiered PR workflows using `/plan` and `/generate` slash commands |
+| **Lab 11 — Security Hardening Sprint** | OWASP Scanner agent, security-fix skill, PreToolUse auth-guard hook, and automated fix PRs |
+
+---
+
 ## Functional
 
 Book Favorites is a full-stack web application that allows users to:
