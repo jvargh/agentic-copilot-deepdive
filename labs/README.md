@@ -21,6 +21,7 @@ This workshop teaches you to customize GitHub Copilot across its full agentic st
 | [08](08-capstone-greenfield.md) | Greenfield Capstone | ~60 min | VS Code | Build a Feature Flag Service from scratch using the full AI pipeline - custom instructions, MCP server, hooks, skills, and a coordinated agent pipeline to plan, implement, and security-review |
 | [09](09-capstone-brownfield.md) | Brownfield Capstone | ~60 min | VS Code | Deliver a full-stack Book Quotes feature in a production sprint using everything from Labs 00–06 - MCP tools, custom instructions, agent handoffs, hooks, and reusable skills |
 | [10](10-plan-generate-workflow.md) | Plan → Generate → Implement | ~45 min | VS Code | Use `/plan` and `/generate` slash commands to orchestrate a model-tiered PR workflow - a large model plans and decomposes work, a smaller model executes each task |
+| [11](11-security-hardening.md) | Security Hardening Sprint | ~60 min | VS Code | Run a complete security hardening sprint - build a read-only OWASP Scanner agent, a security-fix skill, a PreToolUse auth-guard hook, and chain Scanner → Implementer → Reviewer to open fix PRs and produce a compliance report |
 
 ---
 
