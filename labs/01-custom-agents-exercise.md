@@ -217,6 +217,13 @@ handoffs:
 
 > Update the existing "Planner" agent to add handoffs with label "Start Implementation" to agent "Implementer" with prompt "Implement the plan outlined above. Follow each step carefully and run tests after each change." Keep all existing configuration unchanged.
 
+> **What does `send` do?** In a custom agent's `handoffs` entry, `send` controls whether the handoff prompt is auto-submitted or just staged:
+>
+> *   `send: false` (used here) - clicking the handoff button switches to the target agent and **pre-fills** the chat input with `prompt`, but does **not** submit it. You can edit or add context, then press Enter yourself.
+> *   `send: true` - same switch and pre-fill, but the prompt is sent **immediately** with no chance to edit.
+>
+> Later, in `Implementer.agent.md` (Exercise 2.2), the Implementer will hand off to the Reviewer the same way: with a suggested prompt (`Review the changes I just implemented.`) that you get to review before it runs.
+
 **Note:** Since the Implementer agent doesn't exist yet, this handoff won't work until you create it in the next step.
 
 ### Exercise 2.2 - Create the Implementation Agent

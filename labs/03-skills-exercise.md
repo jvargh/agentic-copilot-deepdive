@@ -18,6 +18,7 @@
 *   [Part 2 – Extract and Install Community Skills](#part-2--extract-and-install-community-skills-30-min)
     *   [Exercise 2.1 – Extract a Skill from a Debugging Conversation](#exercise-21--extract-a-skill-from-a-debugging-conversation-15-min)
     *   [Exercise 2.2 – Install Community Skills from awesome-copilot](#exercise-22--install-community-skills-from-awesome-copilot-15-min)
+    *   [Exercise 2.3 – Install the Anthropic skill-creator Meta-Skill](#exercise-23--install-the-anthropic-skill-creator-meta-skill-10-min)
 *   [Summary](#summary)
     *   [Key Takeaways](#key-takeaways)
     *   [Next Steps](#next-steps)
@@ -46,8 +47,7 @@ Agent Skills are folders of instructions, scripts, and resources that Copilot ca
 |      | 1.3      | [Generate Fixtures for a Different Resource](#exercise-13--generate-fixtures-for-a-different-resource)              | Generate fixtures for favorites API and edge-case book data                          | 7 min      |
 |      | 1.4      | [Understand Frontmatter Controls](#exercise-14--understand-frontmatter-controls)                                    | Experiment with `user-invocable` and `disable-model-invocation`                      | 5 min      |
 | 2    | 2.1      | [Extract a Skill from a Debugging Conversation](#exercise-21--extract-a-skill-from-a-debugging-conversation-15-min) | Introduce a bug, debug with Copilot, extract the procedure as a reusable skill       |
-|      | 2.2      | [Install Community Skills from awesome-copilot](#exercise-22--install-community-skills-from-awesome-copilot-15-min) | Install review-and-refactor, conventional-commit, and jest skills; test composition  |
-
+|      | 2.2      | [Install Community Skills from awesome-copilot](#exercise-22--install-community-skills-from-awesome-copilot-15-min) | Install review-and-refactor, conventional-commit, and jest skills; test composition  ||      | 2.3      | [Install the Anthropic skill-creator Meta-Skill](#exercise-23--install-the-anthropic-skill-creator-meta-skill-10-min) | Install `anthropics/skills/skill-creator` and use it to draft, test, and iterate on a new skill |
 ### Prerequisites
 
 | Requirement           | Details                                                                                |
@@ -185,7 +185,7 @@ Regardless of which workflow you choose, explicit endpoint discovery prevents mi
 - Tests follow the Jest conventions from `testing.instructions.md`
 - Includes both success and error case tests (401 no token, 404 not found)
 
-1.  Generate test fixtures that validate edge-case book data:
+2.  Generate test fixtures that validate edge-case book data:
 
 ```
 /generating-test-fixtures Check backend/data/books.json to see which edge-case books exist. Then generate Jest test fixtures that verify only those edge-case books: special characters in titles, boundary years (1900, 2025), and very long title strings. Use actual data from books.json to build assertions.
@@ -295,17 +295,31 @@ Copilot loads the skill and follows the exact steps you captured: read the error
 Ask Copilot to turn the skill into a broader team playbook that covers multiple failure types:
 
 ```
-/create-skill Using /debugging-backend-tests as a starting point, create a new skill called backend-incident-playbook that extends it with sections for: authentication failures (401/403), database connection errors, and CORS issues. Keep the same workflow structure but add a triage table at the top to route to the right section based on error type.
+/create-skill Using skill 'debugging-backend-tests' as a starting point, create a new skill called backend-incident-playbook that extends it with sections for: authentication failures (401/403), database connection errors, and CORS issues. Keep the same workflow structure but add a triage table at the top to route to the right section based on error type.
 ```
 
 This composes your extracted knowledge into a richer, structured runbook that the whole team can invoke.
+
+**Test the playbook**
+
+Verify the new `backend-incident-playbook` skill actually routes to the right section for different failure types.
+
+Simulate an **authentication failure (401)**. Temporarily comment out the `authenticateToken` middleware on one route in [backend/routes/favorites.js](../backend/routes/favorites.js) (or change `SECRET_KEY` in a test wiring so `jsonwebtoken` throws), run `npm run test:backend`, capture the 401 output, then in a new Chat:
+
+```
+/backend-incident-playbook I ran `npm run test:backend` and got a 401 Unauthorized on favorites endpoints. Here is the output: [paste output]. Use the triage table to pick the right section and walk me through the steps.
+```
+
+**Verify:** Copilot uses the triage table to jump to the auth section (not DB or CORS), inspects the middleware / token handling, identifies your change, and suggests the fix. Revert your change and confirm tests pass.
+
+**Success criteria:** The playbook picks the correct section via the triage table, applies the debug workflow, and produces a fix that makes `npm run test:backend` pass again. If Copilot ignores the triage table or misroutes, edit `SKILL.md` to make the trigger keywords in the table more explicit (e.g., "401, 403, Unauthorized, jsonwebtoken" for the auth row) and repeat.
 
 **Option C – Append a new issue pattern to the skill**
 
 When you encounter a new class of bug, add it to the skill rather than starting a new conversation from scratch:
 
 ```
-I just fixed a bug where a route was missing await on an async database call, causing it to return a Promise instead of the resolved value. Append a new section to /debugging-backend-tests that captures this async/await mismatch pattern: symptom (response is [object Promise]), how to spot it in the route handler, and how to fix it.
+I just fixed a bug where a route was missing await on an async database call, causing it to return a Promise instead of the resolved value. Append a new section to skill 'debugging-backend-tests' that captures this async/await mismatch pattern: symptom (response is [object Promise]), how to spot it in the route handler, and how to fix it.
 ```
 
 Over time, the skill grows into a living reference that captures every debugging pattern your team encounters.
@@ -335,7 +349,7 @@ The [awesome-copilot skills directory](https://github.com/github/awesome-copilot
 Copy each skill directory into your project's `.github/skills/` folder. You can do this manually or use terminal commands:
 
 ```
-# generated-by-copilot: Clone the awesome-copilot repo temporarily and copy the three skills
+Clone the awesome-copilot repo temporarily and copy the three skills
 git clone --depth 1 --filter=blob:none --sparse https://github.com/github/awesome-copilot.git /tmp/awesome-copilot
 cd /tmp/awesome-copilot
 git sparse-checkout set skills/review-and-refactor skills/conventional-commit skills/javascript-typescript-jest
@@ -412,6 +426,45 @@ In Steps 1–4, you tested each skill in isolation. Now run them together in **o
     ```
 
 > **Key insight:** Skills are composable. A single prompt can activate multiple skills simultaneously — each handles its specific concern while Copilot orchestrates them together. You don't need to invoke each skill separately; Copilot loads the relevant combination based on the trigger terms in your prompt.
+
+---
+
+### Exercise 2.3 – Install the Anthropic skill-creator Meta-Skill (10 min)
+
+**Objective:** Install Anthropic's [`skill-creator`](https://github.com/anthropics/skills/tree/main/skills/skill-creator) and use it to author a new skill. Unlike `/create-skill` (one-shot scaffold), `skill-creator` runs a `draft -> test -> review -> improve` loop and produces a better-triggered skill.
+
+#### Step 1 - Install and verify
+
+```
+git clone --depth 1 --filter=blob:none --sparse https://github.com/anthropics/skills.git /tmp/anthropic-skills
+cd /tmp/anthropic-skills && git sparse-checkout set skills/skill-creator
+cp -r skills/skill-creator <your-project-path>/.github/skills/
+cd - && rm -rf /tmp/anthropic-skills
+```
+
+Type `/` in Chat and confirm `/skill-creator` appears.
+
+#### Step 2 - Author a new skill with it
+
+Send this prompt (requirements are pre-answered so `skill-creator` skips its Capture Intent interview and goes straight to drafting):
+
+> "/skill-creator Create a skill called `seeding-book-fixtures` that seeds `backend/data/books.json` with a deterministic set of test books before `npm run test:backend`.
+>
+> - Replace the file each run; explicit invocation only.
+> - 6 books with `id`, `title`, `author`, `year`. Cover a normal case, a very long title (>200 chars), special characters (é, ", '), and boundary years (1900 and 2025).
+> - Overwrite in place, print `seeded N books`, idempotent (no RNG).
+>
+> Draft the `SKILL.md`, propose 2 test prompts, then draft assertions."
+
+**Verify:** `skill-creator` loads, drafts a `SKILL.md` at `.github/skills/seeding-book-fixtures/` with trigger phrases ("seed books", "reset fixtures", "prepare test data"), and proposes test prompts + assertions.
+
+#### Step 3 - Confirm the new skill triggers
+
+In a new Chat, send a prompt *without* the slash:
+
+> "Reset the book fixtures so I have a clean set before I run the backend tests."
+
+**Verify:** Copilot auto-loads `seeding-book-fixtures` from its description. If not, ask `skill-creator` to sharpen the trigger keywords and retry.
 
 ---
 
