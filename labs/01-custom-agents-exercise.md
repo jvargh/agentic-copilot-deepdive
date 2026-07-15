@@ -231,7 +231,7 @@ handoffs:
 ---
 description: Implement features based on a plan - edits files, runs tests, and commits.
 name: Implementer
-tools: ['edit/editFiles', 'edit/createFiles', 'read/terminalLastCommand', 'search', 'search/codebase']
+tools: ['edit/editFiles', 'edit/createFile', 'read/terminalLastCommand', 'search', 'search/codebase']
 handoffs:
   - label: Request Code Review
     agent: Reviewer
@@ -246,7 +246,7 @@ You implement features step by step.
 ## Rules
 
 1. Follow the plan step by step
-2. Create new files using `createFiles` tool - never use terminal to create source files
+2. Create new files using `createFile` tool - never use terminal to create source files
 3. After creating a new file, read it back to verify it exists before proceeding
 4. Never add `require()` or `import` for a file until you have verified it exists on disk
 5. Start comments with "generated-by-copilot: "
@@ -269,7 +269,7 @@ You implement features step by step.
 
 **Option B: Use** `/create-agent` **command:**
 
-> Create a custom agent with name "Implementer" and description "Implement features based on a plan - edits files, runs tests, and commits." Use tools: edit/editFiles, edit/createFiles, read/terminalLastCommand, search, search/codebase. Add handoffs with label "Request Code Review". The handoff agent called "Reviewer" should have "Implementation instructions" as the main heading with subtitle "You implement features step by step." Include Rules section: 1) Follow the plan step by step, 2) Create new files using createFiles tool - never use terminal to create source files, 3) After creating a new file read it back to verify it exists before proceeding, 4) Never add require() or import for a file until you have verified it exists on disk, 5) Start comments with "generated-by-copilot: ", 6) Run tests after changes: npm run test:backend for backend, npm run test:frontend for frontend. Include Key Patterns section: Backend routes use "module.exports = function createXRouter(deps) { ... }", CSS Modules use camelCase class names (.bookCard not .book-card), User data always default new fields "const list = user.newField || \[\];", New user fields add to auth.js registration and both data files.
+> Create a custom agent with name "Implementer" and description "Implement features based on a plan - edits files, runs tests, and commits." Use tools: edit/editFiles, edit/createFile, read/terminalLastCommand, search, search/codebase. Add handoffs with label "Request Code Review". The handoff agent called "Reviewer" should have "Implementation instructions" as the main heading with subtitle "You implement features step by step." Include Rules section: 1) Follow the plan step by step, 2) Create new files using createFile tool - never use terminal to create source files, 3) After creating a new file read it back to verify it exists before proceeding, 4) Never add require() or import for a file until you have verified it exists on disk, 5) Start comments with "generated-by-copilot: ", 6) Run tests after changes: npm run test:backend for backend, npm run test:frontend for frontend. Include Key Patterns section: Backend routes use "module.exports = function createXRouter(deps) { ... }", CSS Modules use camelCase class names (.bookCard not .book-card), User data always default new fields "const list = user.newField || \[\];", New user fields add to auth.js registration and both data files.
 
 **Note:** The Implementer has edit tools, so it can modify files. It also has a handoff to the Reviewer for code review after implementation. Reviewer doesn't exist yet, so that will be the next step.
 
