@@ -101,38 +101,48 @@ Do you have the MCP Builder skill loaded? Summarize the four phases of building 
 
 > **Purpose:** Use the MCP Builder skill to scaffold a TypeScript MCP server project from a single prompt. Compare the generated structure against the skill's recommendations - learn what a well-structured MCP project looks like.
 
-### Step 1: Understand the Data
+### Step 1: Prompt Copilot to Scaffold
 
-The data files are in `copilot-mcp/src/data/`. Open both:
-
-| File                 | Contents                    |
-| -------------------- | --------------------------- |
-| `books.json`         | ISBN, title, author         |
-| `books-details.json` | ISBN, summary, date, author |
-
-### Step 2: Prompt Copilot to Scaffold
-
-In Agent Mode:
+In Agent Mode. This prompt uses **phased validation gates** so Copilot runs pre-flight checks, halts on failure, and doesn't skip data-file copy or build steps:
 
 ```
-Using the MCP Builder skill, create a new TypeScript MCP server project in the workspace root 
-at book-database-mcp-server/. The server should be called book-database-mcp-server and will 
-serve a local book catalog from two JSON data files. Use stdio transport. Follow the recommended 
-project structure from the skill's TypeScript guide.
+Using the MCP Builder skill, scaffold, build, and validate a TypeScript MCP server in the
+workspace root at book-database-mcp-server/. Server name: book-database-mcp-server. stdio
+transport. Follow the skill's TypeScript project structure.
 
-The source data files are located in this workspace at:
-- data/books.json - contains ISBN, title, author
-- data/books-details.json - contains ISBN, summary, date, author
+Source data files in this workspace:
+- data/books.json         - array of { isbn, title, author }
+- data/books-details.json - array of { isbn, summary, date, author }
 
-After scaffolding the project structure, copy both source data files into the new project 
-under src/data/ so they are accessible to the server at runtime.
+Run these phases in order. ABORT and report if any gate fails; do not proceed to the next phase.
 
-Verify the final structure includes:
-- book-database-mcp-server/src/data/books.json
-- book-database-mcp-server/src/data/books-details.json
+PHASE 0 - PRE-FLIGHT
+[ ] node --version prints >= 18
+[ ] npm config get registry returns a reachable registry
+[ ] Both data files exist at data/books.json and data/books-details.json
+
+PHASE 1 - SCAFFOLD
+[ ] Generate project structure per the MCP Builder TypeScript guide
+[ ] package.json has "type": "module" and depends on @modelcontextprotocol/sdk and zod
+[ ] tsconfig.json has "strict": true, "target": "ES2020", "module": "Node16",
+    "outDir": "./dist", "rootDir": "./src", "resolveJsonModule": true
+[ ] Copy data files into book-database-mcp-server/src/data/
+
+PHASE 2 - COMPILE
+[ ] cd book-database-mcp-server && npm install && npm run build
+[ ] Fail if output contains "error TS"
+[ ] Confirm dist/index.js exists
+
+PHASE 3 - DISTRIBUTE
+[ ] Copy src/data/*.json to dist/data/ BEFORE any server start
+[ ] List dist/data/ and confirm both JSON files are present
+
+Report pass/fail for every gate.
 ```
 
-### Step 3: Verify the Generated Structure
+> **Known limitation (Phase 2):** MCP SDK + Zod inference can exceed the TypeScript type-depth limit. If the build fails with "Type instantiation is excessively deep", add `// @ts-ignore` on the offending `server.registerTool(...)` line and type the handler params as `any`, then re-parse inside with your Zod schema. This is documented in the MCP Builder skill's Node reference.
+
+### Step 2: Verify the Generated Structure
 
 ```
 book-database-mcp-server/
@@ -164,10 +174,10 @@ Copy the data files from data/books.json and data/books-details.json in the work
 into book-database-mcp-server/src/data/ now.
 ```
 
-Verify the files were copied before proceeding to Step 4.
+Verify the files were copied before proceeding to Step 3.
 
 
-### Step 4: Verify Config
+### Step 3: Verify Config
 
 Open `package.json` and `tsconfig.json`. Confirm:
 
@@ -177,7 +187,7 @@ Open `package.json` and `tsconfig.json`. Confirm:
 - `outDir` → `./dist`, `rootDir` → `./src`
 - `"build": "tsc"` script defined
 
-### Step 5: Install and Build
+### Step 4: Install and Build
 
 ```
 cd book-database-mcp-server
@@ -187,7 +197,7 @@ npm run build
 
 Fix any compilation errors before moving on.
 
-### Step 6: Copy Data Files to dist
+### Step 5: Copy Data Files to dist
 
 After building, TypeScript compiles only `.ts` files to the `dist/` directory. The data files need to be manually copied:
 
@@ -224,8 +234,9 @@ dist/data/books-details.json
 
 ### Step 1: Prompt for Tool Implementation
 
-> Using the MCP Builder skill best practices, implement four tools in the book-database MCP server: get_book_by_isbn, get_book_by_title, get_books_by_titles, and get_books_by_isbn_list. Use server.registerTool() (the modern API). Each tool should have Zod input schemas with .strict(), proper title, description, inputSchema, and annotations (all are read-only, non-destructive, idempotent). Return formatted text responses. Handle not-found cases with clear error messages.
-
+> Using the MCP Builder skill best practices, implement four tools in the book-database MCP server: `get_book_by_isbn`, `get_book_by_title`, `get_books_by_titles`, and `get_books_by_isbn_list`. Use `server.registerTool()` (the modern API). Each tool should have Zod input schemas with `.strict()` and `.describe()`, proper title, description, inputSchema, and annotations (all are read-only, non-destructive, idempotent). Return formatted text responses. Handle not-found cases with clear, actionable error messages.
+>
+> **Type-depth guardrail:** If the TypeScript compiler complains about excessive type instantiation depth on any `server.registerTool(...)` call, add `// @ts-ignore` on that line, declare the handler as `async (params: any) => { ... }`, and parse `params` with the tool's Zod schema inside the handler. Do NOT use `any` anywhere else.
 ### Step 2: Review the Implementation
 
 Check these quality criteria:
@@ -290,7 +301,10 @@ Verify the response includes `"name": "book-database-mcp-server"` and a `capabil
 
 ### Step 1: Launch the Inspector
 
+From the `book-database-mcp-server/` folder (where `dist/index.js` lives):
+
 ```
+cd book-database-mcp-server
 npx @modelcontextprotocol/inspector node dist/index.js
 ```
 
@@ -378,7 +392,8 @@ Now get the summaries for The Hobbit and Pride and Prejudice.
 | Issue                                    | Fix                                                                                       |
 | ---------------------------------------- | ----------------------------------------------------------------------------------------- |
 | `npm run build` fails with import errors | Ensure `"type": "module"` in package.json and `"module": "Node16"` in tsconfig.json       |
+| `error TS2589: Type instantiation is excessively deep` | Add `// @ts-ignore` on the failing `server.registerTool(...)` line and type the handler params as `any` (re-parse with Zod inside). MCP SDK + Zod inference exceeds TS depth limits. |
 | MCP Inspector won't connect              | Run `npm run build` first - `dist/index.js` must exist                                    |
 | Tools not appearing in Copilot           | Restart VS Code after updating `.vscode/mcp.json`                                         |
-| `Cannot find module './data/books.json'` | Ensure JSON files are in `src/data/` and use `resolveJsonModule` in tsconfig              |
+| `Cannot find module './data/books.json'` | Ensure JSON files are in `src/data/` **and** copied to `dist/data/` after each build; enable `resolveJsonModule` in tsconfig |
 | Copilot uses `server.tool()`             | Re-prompt: "Use `server.registerTool()` - the modern API, not deprecated `server.tool()`" |
