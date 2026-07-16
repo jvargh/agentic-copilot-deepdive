@@ -239,7 +239,25 @@ File-based instructions use `.instructions.md` files stored in `.github/instruct
 1.  In Copilot Chat, run:
 
     ```
-    /create-instructions "Use Context7 to fetch the latest React and Redux Toolkit documentation first. Then create a concise instruction file (under 50 lines in the body) and save it as react.instructions.md. In the YAML frontmatter, include name: 'React Component Standards', a description written in the "Use when..." pattern that is keyword-rich for on-demand discovery — covering writing, refactoring, or reviewing React components, JSX files, Redux slices, and frontend JavaScript, and naming the topics it covers (functional components, import order, Redux hooks, local vs shared state, CSS Modules, auth guards), and applyTo: "frontend/**/*.{jsx,js}" as a plain string — not an array, scoped to the frontend folder so it auto-attaches to both JSX components and plain JS files like store slices and hooks while excluding backend .js files, and do not include TSX. Conventions to enforce: use functional components with hooks only (no class components), destructure props in the function signature with defaults, import order is React → third-party → local components → styles, use useAppDispatch and useAppSelector from ../store/hooks instead of raw useDispatch/useSelector from react-redux, use Redux Toolkit slices in store for shared state and useState only for local UI state (dropdowns, form inputs), use CSS Modules with import styles from '../styles/ComponentName.module.css' and reference classes as styles.className, and always check for a token before dispatching authenticated API calls — redirect to login if missing. Include one short good/bad code example for the Redux hooks rule. Do not add performance optimization, testing, or custom hooks sections — keep it focused on the conventions listed above."
+    /create-instructions "Use Context7 to fetch the latest React and Redux Toolkit documentation first.
+    Then create a concise instruction file (under 50 lines in the body) and save it as react.instructions.md.
+    In the YAML frontmatter, include name: 'React Component Standards',
+    a description written in the "Use when..." pattern that is keyword-rich for on-demand discovery,
+    covering writing, refactoring, or reviewing React components, JSX files, Redux slices, and frontend JavaScript,
+    and naming the topics it covers (functional components, import order, Redux hooks, local vs shared state, CSS Modules, auth guards),
+    and applyTo: "frontend/**/*.{jsx,js}" as a plain string (not an array),
+    scoped to the frontend folder so it auto-attaches to both JSX components and plain JS files like store slices and hooks
+    while excluding backend .js files, and do not include TSX.
+    Conventions to enforce:
+    use functional components with hooks only (no class components),
+    destructure props in the function signature with defaults,
+    import order is React → third-party → local components → styles,
+    use useAppDispatch and useAppSelector from ../store/hooks instead of raw useDispatch/useSelector from react-redux,
+    use Redux Toolkit slices in store for shared state and useState only for local UI state (dropdowns, form inputs),
+    use CSS Modules with import styles from '../styles/ComponentName.module.css' and reference classes as styles.className,
+    and always check for a token before dispatching authenticated API calls (redirect to login if missing).
+    Include one short good/bad code example for the Redux hooks rule.
+    Do not add performance optimization, testing, or custom hooks sections; keep it focused on the conventions listed above."
     ```
 
     > **Result:** Copilot calls Context7 to resolve and fetch docs for `react` and `@reduxjs/toolkit`, then uses those docs alongside your conventions to generate an instruction file with up-to-date patterns.
@@ -317,7 +335,21 @@ const token = useSelector(state => state.user.token);
 1.  In a new Copilot Chat, run:
 
     ```
-    /create-instructions "Use Context7 to fetch the latest Express.js documentation first. Then create a concise instruction file (under 40 lines in the body) and save it as `.github/instructions/express.instructions.md`. In the YAML frontmatter, include `name: 'Express API Standards'`, a one-line `description`, and `applyTo: '**/*.js'` as a plain string - not an array. Conventions to enforce: each resource gets its own route file in `backend/routes/` (e.g., `books.js`, `favorites.js`), route files export a factory function that receives a `deps` object for dependency injection, register new routers in `backend/routes/index.js` via `router.use()`, use plural nouns for resource paths like `/books` and `/reading-lists`, use `authenticateToken` middleware for protected endpoints, return appropriate HTTP status codes (200, 201, 400, 401, 404, 500), use consistent error format `{ error: 'message' }`, never expose stack traces, JSON data files live in `backend/data/`, write with `JSON.stringify(data, null, 2)`. Do not add testing, deployment, or logging sections - keep it focused on route and API conventions only."
+    /create-instructions "Use Context7 to fetch the latest Express.js documentation first.
+    Then create a concise instruction file (under 40 lines in the body)
+    and save it as `.github/instructions/express.instructions.md`.
+    In the YAML frontmatter, include `name: 'Express API Standards'`,
+    a one-line `description`, and `applyTo: '**/*.js'` as a plain string (not an array).
+    Conventions to enforce:
+    each resource gets its own route file in `backend/routes/` (e.g., `books.js`, `favorites.js`),
+    route files export a factory function that receives a `deps` object for dependency injection,
+    register new routers in `backend/routes/index.js` via `router.use()`,
+    use plural nouns for resource paths like `/books` and `/reading-lists`,
+    use `authenticateToken` middleware for protected endpoints,
+    return appropriate HTTP status codes (200, 201, 400, 401, 404, 500),
+    use consistent error format `{ error: 'message' }`, never expose stack traces,
+    JSON data files live in `backend/data/`, write with `JSON.stringify(data, null, 2)`.
+    Do not add testing, deployment, or logging sections; keep it focused on route and API conventions only."
     ```
 
 2.  Review the generated file against this checklist:
@@ -377,7 +409,21 @@ applyTo: '**/*.js'
 1.  In Copilot Chat, run:
 
     ```
-    /create-instructions "Use Context7 to fetch the latest Jest and Cypress documentation first. Then create a concise instruction file (under 30 lines in the body) and save it as `.github/instructions/testing.instructions.md`. In the YAML frontmatter, include `name: 'Testing Standards'`, a one-line `description`, and `applyTo: '**/*.{test,spec,cy}.{js,jsx}'` as a plain string - not an array. Conventions to enforce: backend Jest tests go in `backend/tests/` with `.test.js` extension using supertest for HTTP testing, run with `npm run test:backend`, structure as describe block per route and it block per scenario, always test both success and error cases (400, 401, 404). Frontend Cypress E2E tests go in `frontend/cypress/e2e/` with `.cy.js` extension, run with `npm run build:frontend && npm run test:frontend`, use `cy.get('[data-testid="..."]')` for element selection. Always start test descriptions with 'should'. Do not add CI/CD, coverage, or snapshot testing sections."
+    /create-instructions "Use Context7 to fetch the latest Jest and Cypress documentation first.
+    Then create a concise instruction file (under 30 lines in the body)
+    and save it as `.github/instructions/testing.instructions.md`.
+    In the YAML frontmatter, include `name: 'Testing Standards'`,
+    a one-line `description`, and `applyTo: '**/*.{test,spec,cy}.{js,jsx}'` as a plain string (not an array).
+    Conventions to enforce:
+    backend Jest tests go in `backend/tests/` with `.test.js` extension using supertest for HTTP testing,
+    run with `npm run test:backend`,
+    structure as describe block per route and it block per scenario,
+    always test both success and error cases (400, 401, 404).
+    Frontend Cypress E2E tests go in `frontend/cypress/e2e/` with `.cy.js` extension,
+    run with `npm run build:frontend && npm run test:frontend`,
+    use `cy.get('[data-testid="..."]')` for element selection.
+    Always start test descriptions with 'should'.
+    Do not add CI/CD, coverage, or snapshot testing sections."
     ```
 
 2.  Review and accept the file.
@@ -421,7 +467,19 @@ applyTo: '**/*.{test,spec,cy}.{js,jsx}'
 1.  In Copilot Chat, run:
 
     ```
-    /create-instructions "Use Context7 to fetch the latest CSS Modules documentation first. Then create a concise instruction file (under 30 lines in the body) and save it as `.github/instructions/css.instructions.md`. In the YAML frontmatter, include `name: 'CSS Module Standards'`, a one-line `description`, and `applyTo: '**/*.module.css'` as a plain string - not an array. Conventions to enforce: use kebab-case for all class names (e.g., `.book-card`, `.nav-header`), never use `!important`, use CSS custom properties (variables) defined in `App.module.css` for colors and spacing, mobile-first responsive design with `min-width` media queries, and keep selectors flat - maximum 2 levels of nesting. Include one short good/bad CSS example. Do not add animation, theming, or preprocessor sections."
+    /create-instructions "Use Context7 to fetch the latest CSS Modules documentation first.
+    Then create a concise instruction file (under 30 lines in the body)
+    and save it as `.github/instructions/css.instructions.md`.
+    In the YAML frontmatter, include `name: 'CSS Module Standards'`,
+    a one-line `description`, and `applyTo: '**/*.module.css'` as a plain string (not an array).
+    Conventions to enforce:
+    use kebab-case for all class names (e.g., `.book-card`, `.nav-header`),
+    never use `!important`,
+    use CSS custom properties (variables) defined in `App.module.css` for colors and spacing,
+    mobile-first responsive design with `min-width` media queries,
+    and keep selectors flat (maximum 2 levels of nesting).
+    Include one short good/bad CSS example.
+    Do not add animation, theming, or preprocessor sections."
     ```
 
 2.  Review the generated file against this checklist:
