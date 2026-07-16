@@ -7,6 +7,11 @@
       "args": [
         "/path-to/github-copilot-agent/book-database/build/index.js"
       ]
-    }
+    },
+    "context7": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp@latest"]
+    }    
   }
 }
