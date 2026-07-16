@@ -15,7 +15,7 @@
   - [Exercise 1.2 - Enhance with Project Conventions](#exercise-12---enhance-with-project-conventions)
   - [Exercise 1.3 - Verify Instructions Are Applied](#exercise-13---verify-instructions-are-applied)
   - [Exercise 1.4 - Check the References Section](#exercise-14---check-the-references-section)
-- [Part 2 - File-Based Instructions with `/create-instruction` (20 min)](#part-2---file-based-instructions-with-create-instruction-20-min)
+- [Part 2 - File-Based Instructions with `/create-instructions` (20 min)](#part-2---file-based-instructions-with-create-instructions-20-min)
   - [How File-Based Instructions Work](#how-file-based-instructions-work)
   - [Exercise 2.1 - Generate React Instructions](#exercise-21---generate-react-instructions)
   - [Exercise 2.2 - Generate Express Backend Instructions](#exercise-22---generate-express-backend-instructions)
@@ -24,7 +24,7 @@
   - [Exercise 2.5 - Verify All Instructions with `/instructions`](#exercise-25---verify-all-instructions-with-instructions)
   - [Exercise 2.6 - Test Pattern-Based Activation](#exercise-26---test-pattern-based-activation)
   - [Exercise 2.7 - Extract an Instruction from a Conversation](#exercise-27---extract-an-instruction-from-a-conversation)
-  - [Exercise 2.8 - Understand `/create-instruction` vs `/init`](#exercise-28---understand-create-instruction-vs-init)
+  - [Exercise 2.8 - Understand `/create-instructions` vs `/init`](#exercise-28---understand-create-instructions-vs-init)
 - [Part 3 - Organize and Verify Instructions (5 min)](#part-3---organize-and-verify-instructions-5-min)
   - [Exercise 3.1 - Review Your Instruction File Structure](#exercise-31---review-your-instruction-file-structure)
   - [Exercise 3.2 - Troubleshoot with Diagnostics](#exercise-32---troubleshoot-with-diagnostics)
@@ -60,7 +60,7 @@ Instead of typing "always use single quotes and semicolons" in every chat, you w
 | --- | --- | --- |
 | Pre | [Prerequisites](#prerequisites) | VS Code, Copilot subscription, repo cloned, Context7 MCP configured, app running |
 | 1 | [Always-On Instructions with `copilot-instructions.md`](#part-1---always-on-instructions-with-copilot-instructionsmd-10-min) | Understand always-on vs file-based instructions; enhance `copilot-instructions.md` with project conventions |
-| 2 | [File-Based Instructions with `/create-instruction`](#part-2---file-based-instructions-with-create-instruction-20-min) | Generate targeted `.instructions.md` files with `applyTo` glob patterns; extract instructions from conversations |
+| 2 | [File-Based Instructions with `/create-instructions`](#part-2---file-based-instructions-with-create-instructions-20-min) | Generate targeted `.instructions.md` files with `applyTo` glob patterns; extract instructions from conversations |
 | 3 | [Organize and Verify Instructions](#part-3---organize-and-verify-instructions-5-min) | Use `/instructions` to verify loaded files; troubleshoot with Diagnostics; understand instruction priority |
 
 
@@ -93,7 +93,7 @@ This lab uses the **Context7 MCP server** to pull up-to-date library documentati
 1.  Open `.vscode/mcp.json` in the editor, click the **Start** button that appears above the `context7` server entry to start the MCP server.
 2.  Verify it is running: in the Chat view, click the **Tools** button (wrench icon) and confirm that `context7` tools (`resolve-library-id`, `query-docs`) appear in the tools list.
 
-> **Why Context7?** When you ask `/create-instruction` to generate conventions for React or Express, the AI relies on its training data which may be outdated. By referencing Context7 in your prompt, Copilot first fetches the **latest official documentation** for each library, then generates instructions that align with current APIs and best practices.
+> **Why Context7?** When you ask `/create-instructions` to generate conventions for React or Express, the AI relies on its training data which may be outdated. By referencing Context7 in your prompt, Copilot first fetches the **latest official documentation** for each library, then generates instructions that align with current APIs and best practices.
 
 ---
 
@@ -210,9 +210,9 @@ After Copilot responds, look at the **References** section at the bottom of the 
 
 ---
 
-## Part 2 - File-Based Instructions with `/create-instruction` (20 min)
+## Part 2 - File-Based Instructions with `/create-instructions` (20 min)
 
-**Objective:** Use the `/create-instruction` command to generate targeted instruction files that apply only when Copilot is working on specific file types. You will create four instruction files - one each for React, Express, Testing, and CSS - review and refine the AI-generated output, then verify everything with `/instructions`.
+**Objective:** Use the `/create-instructions` command to generate targeted instruction files that apply only when Copilot is working on specific file types. You will create four instruction files - one each for React, Express, Testing, and CSS - review and refine the AI-generated output, then verify everything with `/instructions`.
 
 ### How File-Based Instructions Work
 
@@ -236,15 +236,15 @@ File-based instructions use `.instructions.md` files stored in `.github/instruct
 
 ### **Exercise 2.1 - Generate React Instructions**
 
-1.  Type `/create-instruction` in the Chat view.
-2.  When prompted for a location, choose `.github/instructions` and enter `react` as the file name.
-3.  Copilot will ask you to describe the convention. Enter:
+1.  In Copilot Chat, run:
 
-> Use Context7 to fetch the latest React and Redux Toolkit documentation first. Then create a concise instruction file (under 50 lines in the body) and save it as react.instructions.md. In the YAML frontmatter, include name: 'React Component Standards', a description written in the "Use when..." pattern that is keyword-rich for on-demand discovery — covering writing, refactoring, or reviewing React components, JSX files, Redux slices, and frontend JavaScript, and naming the topics it covers (functional components, import order, Redux hooks, local vs shared state, CSS Modules, auth guards), and applyTo: "frontend/**/*.{jsx,js}" as a plain string — not an array, scoped to the frontend folder so it auto-attaches to both JSX components and plain JS files like store slices and hooks while excluding backend .js files, and do not include TSX. Conventions to enforce: use functional components with hooks only (no class components), destructure props in the function signature with defaults, import order is React → third-party → local components → styles, use useAppDispatch and useAppSelector from ../store/hooks instead of raw useDispatch/useSelector from react-redux, use Redux Toolkit slices in store for shared state and useState only for local UI state (dropdowns, form inputs), use CSS Modules with import styles from '../styles/ComponentName.module.css' and reference classes as styles.className, and always check for a token before dispatching authenticated API calls — redirect to login if missing. Include one short good/bad code example for the Redux hooks rule. Do not add performance optimization, testing, or custom hooks sections — keep it focused on the conventions listed above.
+    ```
+    /create-instructions "Use Context7 to fetch the latest React and Redux Toolkit documentation first. Then create a concise instruction file (under 50 lines in the body) and save it as react.instructions.md. In the YAML frontmatter, include name: 'React Component Standards', a description written in the "Use when..." pattern that is keyword-rich for on-demand discovery — covering writing, refactoring, or reviewing React components, JSX files, Redux slices, and frontend JavaScript, and naming the topics it covers (functional components, import order, Redux hooks, local vs shared state, CSS Modules, auth guards), and applyTo: "frontend/**/*.{jsx,js}" as a plain string — not an array, scoped to the frontend folder so it auto-attaches to both JSX components and plain JS files like store slices and hooks while excluding backend .js files, and do not include TSX. Conventions to enforce: use functional components with hooks only (no class components), destructure props in the function signature with defaults, import order is React → third-party → local components → styles, use useAppDispatch and useAppSelector from ../store/hooks instead of raw useDispatch/useSelector from react-redux, use Redux Toolkit slices in store for shared state and useState only for local UI state (dropdowns, form inputs), use CSS Modules with import styles from '../styles/ComponentName.module.css' and reference classes as styles.className, and always check for a token before dispatching authenticated API calls — redirect to login if missing. Include one short good/bad code example for the Redux hooks rule. Do not add performance optimization, testing, or custom hooks sections — keep it focused on the conventions listed above."
+    ```
 
-> **Result:** Copilot calls Context7 to resolve and fetch docs for `react` and `@reduxjs/toolkit`, then uses those docs alongside your conventions to generate an instruction file with up-to-date patterns.
+    > **Result:** Copilot calls Context7 to resolve and fetch docs for `react` and `@reduxjs/toolkit`, then uses those docs alongside your conventions to generate an instruction file with up-to-date patterns.
 
-4.  Copilot generates a `.instructions.md` file and opens it for review. **Do not accept it yet** but validate it against the checklist below.
+2.  Copilot generates a `.instructions.md` file and opens it for review. **Do not accept it yet** but validate it against the checklist below.
 
 **Review checklist:**
 
@@ -314,13 +314,13 @@ const token = useSelector(state => state.user.token);
 
 ### **Exercise 2.2 - Generate Express Backend Instructions**
 
-1.  Type `/create-instruction` in a new Chat view.
-2.  When prompted for a location, choose `.github/instructions` and enter `express` as the file name.
-3.  Enter this description:
+1.  In a new Copilot Chat, run:
 
-> "Use Context7 to fetch the latest Express.js documentation first. Then create a concise instruction file (under 40 lines in the body) and save it as `.github/instructions/express.instructions.md`. In the YAML frontmatter, include `name: 'Express API Standards'`, a one-line `description`, and `applyTo: '**/*.js'` as a plain string - not an array. Conventions to enforce: each resource gets its own route file in `backend/routes/` (e.g., `books.js`, `favorites.js`), route files export a factory function that receives a `deps` object for dependency injection, register new routers in `backend/routes/index.js` via `router.use()`, use plural nouns for resource paths like `/books` and `/reading-lists`, use `authenticateToken` middleware for protected endpoints, return appropriate HTTP status codes (200, 201, 400, 401, 404, 500), use consistent error format `{ error: 'message' }`, never expose stack traces, JSON data files live in `backend/data/`, write with `JSON.stringify(data, null, 2)`. Do not add testing, deployment, or logging sections - keep it focused on route and API conventions only."
+    ```
+    /create-instructions "Use Context7 to fetch the latest Express.js documentation first. Then create a concise instruction file (under 40 lines in the body) and save it as `.github/instructions/express.instructions.md`. In the YAML frontmatter, include `name: 'Express API Standards'`, a one-line `description`, and `applyTo: '**/*.js'` as a plain string - not an array. Conventions to enforce: each resource gets its own route file in `backend/routes/` (e.g., `books.js`, `favorites.js`), route files export a factory function that receives a `deps` object for dependency injection, register new routers in `backend/routes/index.js` via `router.use()`, use plural nouns for resource paths like `/books` and `/reading-lists`, use `authenticateToken` middleware for protected endpoints, return appropriate HTTP status codes (200, 201, 400, 401, 404, 500), use consistent error format `{ error: 'message' }`, never expose stack traces, JSON data files live in `backend/data/`, write with `JSON.stringify(data, null, 2)`. Do not add testing, deployment, or logging sections - keep it focused on route and API conventions only."
+    ```
 
-4.  Review the generated file against this checklist:
+2.  Review the generated file against this checklist:
 
 | Field | What to look for | If missing |
 | --- | --- | --- |
@@ -331,7 +331,7 @@ const token = useSelector(state => state.user.token);
 | Body | Mentions error response format `{ error: '...' }` | Add the rule |
 | Length | Under ~40 lines - no testing, deployment, or logging sections | Remove extra sections |
 
-5.  Accept the file.
+3.  Accept the file.
 
 **Expected output reference:**
 
@@ -374,13 +374,13 @@ applyTo: '**/*.js'
 
 ### **Exercise 2.3 - Generate Jest and Cypress Testing Instructions**
 
-1.  Type `/create-instruction` in the Chat view.
-2.  When prompted for a location, choose `.github/instructions` and enter `testing` as the file name.
-3.  Enter this description:
+1.  In Copilot Chat, run:
 
-> "Use Context7 to fetch the latest Jest and Cypress documentation first. Then create a concise instruction file (under 30 lines in the body) and save it as `.github/instructions/testing.instructions.md`. In the YAML frontmatter, include `name: 'Testing Standards'`, a one-line `description`, and `applyTo: '**/*.{test,spec,cy}.{js,jsx}'` as a plain string - not an array. Conventions to enforce: backend Jest tests go in `backend/tests/` with `.test.js` extension using supertest for HTTP testing, run with `npm run test:backend`, structure as describe block per route and it block per scenario, always test both success and error cases (400, 401, 404). Frontend Cypress E2E tests go in `frontend/cypress/e2e/` with `.cy.js` extension, run with `npm run build:frontend && npm run test:frontend`, use `cy.get('[data-testid="..."]')` for element selection. Always start test descriptions with 'should'. Do not add CI/CD, coverage, or snapshot testing sections."
+    ```
+    /create-instructions "Use Context7 to fetch the latest Jest and Cypress documentation first. Then create a concise instruction file (under 30 lines in the body) and save it as `.github/instructions/testing.instructions.md`. In the YAML frontmatter, include `name: 'Testing Standards'`, a one-line `description`, and `applyTo: '**/*.{test,spec,cy}.{js,jsx}'` as a plain string - not an array. Conventions to enforce: backend Jest tests go in `backend/tests/` with `.test.js` extension using supertest for HTTP testing, run with `npm run test:backend`, structure as describe block per route and it block per scenario, always test both success and error cases (400, 401, 404). Frontend Cypress E2E tests go in `frontend/cypress/e2e/` with `.cy.js` extension, run with `npm run build:frontend && npm run test:frontend`, use `cy.get('[data-testid="..."]')` for element selection. Always start test descriptions with 'should'. Do not add CI/CD, coverage, or snapshot testing sections."
+    ```
 
-4.  Review and accept the file.
+2.  Review and accept the file.
 
 **Expected output reference:**
 
@@ -418,13 +418,13 @@ applyTo: '**/*.{test,spec,cy}.{js,jsx}'
 
 ### **Exercise 2.4 - Generate CSS Module Instructions**
 
-1.  Type `/create-instruction` in the Chat view.
-2.  When prompted for a location, choose `.github/instructions` and enter `css` as the file name.
-3.  Enter this description:
+1.  In Copilot Chat, run:
 
-> "Use Context7 to fetch the latest CSS Modules documentation first. Then create a concise instruction file (under 30 lines in the body) and save it as `.github/instructions/css.instructions.md`. In the YAML frontmatter, include `name: 'CSS Module Standards'`, a one-line `description`, and `applyTo: '**/*.module.css'` as a plain string - not an array. Conventions to enforce: use kebab-case for all class names (e.g., `.book-card`, `.nav-header`), never use `!important`, use CSS custom properties (variables) defined in `App.module.css` for colors and spacing, mobile-first responsive design with `min-width` media queries, and keep selectors flat - maximum 2 levels of nesting. Include one short good/bad CSS example. Do not add animation, theming, or preprocessor sections."
+    ```
+    /create-instructions "Use Context7 to fetch the latest CSS Modules documentation first. Then create a concise instruction file (under 30 lines in the body) and save it as `.github/instructions/css.instructions.md`. In the YAML frontmatter, include `name: 'CSS Module Standards'`, a one-line `description`, and `applyTo: '**/*.module.css'` as a plain string - not an array. Conventions to enforce: use kebab-case for all class names (e.g., `.book-card`, `.nav-header`), never use `!important`, use CSS custom properties (variables) defined in `App.module.css` for colors and spacing, mobile-first responsive design with `min-width` media queries, and keep selectors flat - maximum 2 levels of nesting. Include one short good/bad CSS example. Do not add animation, theming, or preprocessor sections."
+    ```
 
-4.  Review the generated file against this checklist:
+2.  Review the generated file against this checklist:
 
 | Field | What to look for | If missing |
 | --- | --- | --- |
@@ -435,7 +435,7 @@ applyTo: '**/*.{test,spec,cy}.{js,jsx}'
 | Body | Mentions CSS custom properties | Add the rule |
 | Length | Under ~30 lines - no animation, theming, or preprocessor sections | Remove extra sections |
 
-5.  Accept the file.
+3.  Accept the file.
 
 **Expected output reference:**
 
@@ -541,11 +541,11 @@ Copilot will generate a new `.instructions.md` file capturing the pattern. Revie
 
 Verify with `/instructions` - confirm the newly generated instruction appears in the list alongside your previous instruction files.
 
-### **Exercise 2.8 - Understand** `/create-instruction` **vs** `/init`
+### **Exercise 2.8 - Understand** `/create-instructions` **vs** `/init`
 
 | Command | Purpose | Creates |
 | --- | --- | --- |
-| `/create-instruction` | Generate a targeted, file-specific instruction | A single `.instructions.md` file with a focused `applyTo` pattern |
+| `/create-instructions` | Generate a targeted, file-specific instruction | A single `.instructions.md` file with a focused `applyTo` pattern |
 | `/init` | Bootstrap comprehensive workspace-wide instructions | A `copilot-instructions.md` file **and** updates to any existing `.instructions.md` files |
 
 Since this project already has a `copilot-instructions.md` file and the instruction files you created in Part 2, running `/init` will offer to **update all of them** rather than start from scratch. Copilot scans the workspace - project structure, dependencies, file patterns - and proposes changes across multiple files at once.
@@ -735,7 +735,7 @@ Custom agents add **tool restrictions**, **model preferences**, and **persona-sp
 
 Create a security instruction file that applies to all JavaScript files and enforces OWASP best practices:
 
-1.  Type `/create-instruction` in the Chat view.
+1.  Type `/create-instructions` in the Chat view.
 2.  When prompted for a location, choose `.github/instructions` and enter `owasp-web-security` as the file name.
 3.  Enter this description:
 
@@ -809,7 +809,7 @@ applyTo: '**/*.{js,jsx}'
 
 Create an instruction file that governs how Copilot writes documentation:
 
-1.  Type `/create-instruction` in the Chat view.
+1.  Type `/create-instructions` in the Chat view.
 2.  When prompted for a location, choose `.github/instructions` and enter `docs` as the file name.
 3.  Enter this description:
 
@@ -880,7 +880,7 @@ This is the full instruction layer that the agents you build in the [Custom Agen
 | --- | --- |
 | `copilot-instructions.md` | Always-on, project-wide instructions - the foundation for every chat request |
 | `.instructions.md` | Targeted instructions with `applyTo` patterns - right rules for the right files |
-| `/create-instruction` | AI-generated instruction files from natural language or conversation context |
+| `/create-instructions` | AI-generated instruction files from natural language or conversation context |
 | `/instructions` | Quick verification of which instruction files are loaded and active |
 | **Priority order** | Personal > Repository > Organization - user preferences always win |
 | **Diagnostics** | Right-click Chat > Diagnostics to troubleshoot missing or broken instructions |
